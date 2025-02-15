@@ -340,7 +340,7 @@ impl ScopeVisitor {
             }
 
             ast::Expression::Function(function_box) => {
-                self.read_name(&function_box.0);
+                self.read_name(&function_box.function_token());
             }
 
             ast::Expression::FunctionCall(call) => {

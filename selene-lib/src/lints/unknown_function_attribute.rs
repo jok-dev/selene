@@ -1,0 +1,68 @@
+use super::*;
+use crate::ast_util::range;
+use std::convert::Infallible;
+
+use full_moon::{
+    ast::{self, Ast},
+    visitors::Visitor,
+};
+
+#[derive(Default)]
+pub struct UnknownFunctionAttributeLint;
+
+impl Lint for UnknownFunctionAttributeLint {
+    type Config = ();
+    type Error = Infallible;
+
+    const SEVERITY: Severity = Severity::Error;
+    const LINT_TYPE: LintType = LintType::Correctness;
+
+    fn new(_: Self::Config) -> Result<Self, Self::Error> {
+        Ok(UnknownFunctionAttributeLint)
+    }
+
+    fn pass(&self, ast: &Ast, _: &Context, _: &AstContext) -> Vec<Diagnostic> {
+        let mut visitor = UnknownFunctionAttributeVisitor {
+            positions: Vec::new(),
+        };
+
+        visitor.visit_ast(ast);
+
+        visitor.positions.into_iter().map(|(start, end, attr_name)| {
+            Diagnostic::new(
+                "unknown_function_attribute",
+                format!("unknown function attribute '{}'", attr_name),
+                Label::new((start, end)),
+            )
+        }).collect()
+    }
+}
+
+struct UnknownFunctionAttributeVisitor {
+    positions: Vec<(u32, u32, String)>,
+}
+
+impl Visitor for UnknownFunctionAttributeVisitor {
+    fn visit_function_declaration(&mut self, function_declaration: &ast::FunctionDeclaration) {
+        for attribute in function_declaration.attributes() {
+            let attr_name = attribute.name().to_string().trim().to_owned();
+            if attr_name != "native" {
+                self.positions.push((range(attribute).0, range(attribute).1, attr_name));
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{super::test_util::test_lint, *};
+
+    #[test]
+    fn test_unknown_function_attribute() {
+        test_lint(
+            UnknownFunctionAttributeLint::new(()).unwrap(),
+            "unknown_function_attribute",
+            "unknown_function_attribute",
+        );
+    }
+}
