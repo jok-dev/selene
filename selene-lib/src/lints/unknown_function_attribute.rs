@@ -1,9 +1,16 @@
 use super::*;
-use crate::ast_util::range;
 use std::convert::Infallible;
 
+#[cfg(feature = "roblox")]
+use crate::ast_util::range;
+
+#[cfg(feature = "roblox")]
 use full_moon::{
-    ast::{self, Ast},
+    ast::self,
+};
+
+use full_moon::{
+    ast::Ast,
     visitors::Visitor,
 };
 
