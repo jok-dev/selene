@@ -3,7 +3,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/Kampfkarren/selene/compare/0.28.0...HEAD)
 
-## [0.29.0](https://github.com/Kampfkarren/selene/releases/0.29.0) - 2025-02-17
+## [0.29.1](https://github.com/Kampfkarren/selene/releases/0.29.1) - 2025-02-17
 ### Added
 - Added support for `@native` before function definitions
 - Added new lint `unknown_function_attribute`, which adds errors for function attributes other than `@native`
