@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Standard Library Format - selene Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">selene Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="standard-library-format"><a class="header" href="#standard-library-format">Standard Library Format</a></h1>
+<p>selene provides a robust standard library format to allow for use with environments other than vanilla Lua. Standard libraries are defined in the form of <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> files.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>For examples of the standard library format, see:</p>
+<ul>
+<li><a href="https://github.com/Kampfkarren/selene/blob/main/selene-lib/default_std/lua51.yml"><code>lua51.yml</code></a> - The default standard library for Lua 5.1</li>
+<li><a href="https://github.com/Kampfkarren/selene/blob/main/selene-lib/default_std/lua52.yml"><code>lua52.yml</code></a> - A standard library for Lua 5.2's additions and removals. Reference this if your standard library is based off another (it most likely is).</li>
+<li><a href="https://gist.github.com/Kampfkarren/dff2dc17cc30d68a48510da58fff2381"><code>roblox.yml</code></a> - A standard library for Roblox that incorporates all the advanced features of the format. If you are a Roblox developer, don't use this as anything other than reference--an up to date version of this library is automatically generated.</li>
+</ul>
+<h2 id="base"><a class="header" href="#base">base</a></h2>
+<p>Used for specifying what standard library to be based off of. This supports both builtin libraries (lua51, lua52, lua53, lua54, roblox), as well as any standard libraries that can be found in the current directory.</p>
+<pre><code class="language-yaml">--- # This begins a YAML file
+base: lua51 # We will be extending off of Lua 5.1.
+</code></pre>
+<h2 id="lua_versions"><a class="header" href="#lua_versions">lua_versions</a></h2>
+<p>Used for specifying the versions of Lua you support for the purpose of supporting the syntax of those dialects. If empty, will default to 5.1.</p>
+<p>Supports the following options:</p>
+<ul>
+<li><code>lua51</code> - Lua 5.1</li>
+<li><code>lua52</code> - Lua 5.2</li>
+<li><code>lua53</code> - Lua 5.3</li>
+<li><code>lua54</code> - Lua 5.4</li>
+<li><code>luau</code> - <a href="https://luau-lang.org">Luau</a></li>
+<li><code>luajit</code> - LuaJIT</li>
+</ul>
+<p>Usually you only need to specify one--for example, <code>lua54</code> will give Lua 5.4 syntax and all versions prior. That means that if you specify it, it will look something like:</p>
+<pre><code class="language-yml">lua_versions:
+- luajit
+</code></pre>
+<p>If you are extending off a library that specifies it (like <code>lua51</code>, etc) then you do not need this. If you specify it while overriding a library, it will override it.</p>
+<h2 id="globals"><a class="header" href="#globals">globals</a></h2>
+<p>This is where the magic happens. The <code>globals</code> field is a dictionary where the keys are the globals you want to define. The value you give tells selene what the value can be, do, and provide.</p>
+<p>If your standard library is based off another, overriding something defined there will use your implementation over the original.</p>
+<h3 id="any"><a class="header" href="#any">Any</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  foo:
+    any: true
+</code></pre>
+<p>This specifies that the field can be used in any possible way, meaning that <code>foo.x</code>, <code>foo:y()</code>, etc will all validate.</p>
+<h3 id="functions"><a class="header" href="#functions">Functions</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  tonumber:
+    args:
+      - type: any
+      - type: number
+        required: false
+</code></pre>
+<p>A field is a function if it contains an <code>args</code> and/or <code>method</code> field.</p>
+<p>If <code>method</code> is specified as <code>true</code> and the function is inside a table, then it will require the function be called in the form of <code>Table:FunctionName()</code>, instead of <code>Table.FunctionName()</code>.</p>
+<p><code>args</code> is an array of arguments, in order of how they're used in the function. An argument is in the form of:</p>
+<pre><code>required?: false | true | string;
+type: "any" | "bool" | "function" | "nil"
+    | "number" | "string" | "table" | "..."
+    | string[] | { "display": string }
+</code></pre>
+<h4 id="required"><a class="header" href="#required">"required"</a></h4>
+<ul>
+<li><code>true</code> - The default, this argument is required.</li>
+<li><code>false</code> - This argument is optional.</li>
+<li>A string - This argument is required, and not using it will give this as the reason why.</li>
+</ul>
+<h4 id="observes"><a class="header" href="#observes">"observes"</a></h4>
+<p>This field is used for allowing smarter introspection of how the argument given is used.</p>
+<ul>
+<li>"read-write" - The default. This argument is potentially both written to and read from.</li>
+<li>"read" - This argument is only read from. Currently unused.</li>
+<li>"write" - This argument is only written to. Used by <code>unused_variable</code> to assist in detecting a variable only being written to, even if passed into a function.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-yml"> table.insert:
+  args:
+    - type: table
+      observes: write # This way, `table.insert(x, 1)` doesn't count as a read to `x`
+    - type: any
+    - required: false
+      type: any
+</code></pre>
+<h4 id="must_use"><a class="header" href="#must_use">"must_use"</a></h4>
+<p>This field is used for checking if the return value of a function is used.</p>
+<ul>
+<li><code>false</code> - The default. The return value of this function does not need to be used.</li>
+<li><code>true</code> - The return value of this function must be used.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-yml">  tostring:
+    args:
+      - type: any
+    must_use: true
+</code></pre>
+<h4 id="argument-types"><a class="header" href="#argument-types">Argument types</a></h4>
+<ul>
+<li><code>"any"</code> - Allows any value.</li>
+<li><code>"bool"</code>, <code>"function"</code>, <code>"nil"</code>, <code>"number"</code>, <code>"string"</code>, <code>"table"</code> - Expects a value of the respective type.</li>
+<li><code>"..."</code> - Allows any number of variables after this one. If <code>required</code> is true (it is by default), then this will lint if no additional arguments are given. It is incorrect to have this in the middle.</li>
+<li>Constant list of strings - Will check if the value provided is one of the strings in the list. For example, <code>collectgarbage</code> only takes one of a few exact string arguments--doing <code>collectgarbage("count")</code> will work, but <code>collectgarbage("whoops")</code> won't.</li>
+<li><code>{ "display": string }</code> - Used when no constant could possibly be correct. If a constant is used, selene will tell the user that an argument of the type (display) is required. For an example, the Roblox method <code>Color3.toHSV</code> expects a <code>Color3</code> object--no constant inside it could be correct, so this is defined as:</li>
+</ul>
+<pre><code class="language-yaml">---
+globals:
+  Color3.toHSV:
+    args:
+      - type:
+          display: Color3
+</code></pre>
+<h3 id="properties"><a class="header" href="#properties">Properties</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  _VERSION:
+    property: read-only
+</code></pre>
+<p>Specifies that a property exists. For example, <code>_VERSION</code> is available as a global and doesn't have any fields of its own, so it is just defined as a property.</p>
+<p>The same goes for <code>_G</code>, which is defined as:</p>
+<pre><code class="language-yaml">_G:
+  property: new-fields
+</code></pre>
+<p>The value of property tells selene how it can be mutated and used:</p>
+<ul>
+<li><code>"read-only"</code> - New fields cannot be added or set, and the variable itself cannot be redefined.</li>
+<li><code>"new-fields"</code> - New fields can be added and set, but variable itself cannot be redefined. In the case of _G, it means that <code>_G = "foo"</code> is linted against.</li>
+<li><code>"override-fields"</code> - New fields can't be added, but entire variable can be overridden. In the case of Roblox's <code>Instance.Name</code>, it means we can do <code>Instance.Name = "Hello"</code>, but not <code>Instance.Name.Call()</code>.</li>
+<li><code>"full-write"</code> - New fields can be added and entire variable can be overridden.</li>
+</ul>
+<h3 id="struct"><a class="header" href="#struct">Struct</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  game:
+    struct: DataModel
+</code></pre>
+<p>Specifies that the field is an instance of a <a href="#structs">struct</a>. The value is the name of the struct.</p>
+<h3 id="tables"><a class="header" href="#tables">Tables</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  math.huge:
+    property: read-only
+  math.pi:
+    property: read-only
+</code></pre>
+<p>A field is understood as a table if it has fields of its own. Notice that <code>math</code> is not defined anywhere, but its fields are. This will create an implicit <code>math</code> with the property writability of <code>read-only</code>.</p>
+<h3 id="deprecated"><a class="header" href="#deprecated">Deprecated</a></h3>
+<p>Any field or arg can have a deprecation notice added to it, which will then be read by <a href="../lints/deprecated.html">the deprecated lint</a>.</p>
+<pre><code class="language-yaml">---
+globals:
+  table.getn:
+    args:
+      - type: table
+      - type: number
+    deprecated:
+      message: "`table.getn` has been superseded by #."
+      replace:
+        - "#%1"
+</code></pre>
+<p>The deprecated field consists of two subfields.</p>
+<p><code>message</code> is required, and is a human readable explanation of what the deprecation is, and potentially why.</p>
+<p><code>replace</code> is an optional array of replacements. The most relevant replacement is suggested to the user. If used with a function, then every parameter of the function will be provided.</p>
+<p>For instance, since <code>table.getn</code>'s top replacement is <code>#%1</code>:</p>
+<ul>
+<li><code>table.getn(x)</code> will suggest <code>#x</code></li>
+<li><code>table.getn()</code> will not suggest anything, as there is no relevant suggestion</li>
+</ul>
+<p>You can also use <code>%...</code> to list every argument, separated by commas.</p>
+<p>The following:</p>
+<pre><code class="language-yaml">---
+globals:
+  call:
+    deprecated:
+      message: "call will be removed in the next version"
+      replace:
+        - "newcall(%...)"
+    args:
+      - type: "..."
+        required: false
+</code></pre>
+<p>...will suggest <code>newcall(1, 2, 3)</code> for <code>call(1, 2, 3)</code>, and <code>newcall()</code> for <code>call()</code>.</p>
+<p>You can also use <code>%%</code> to write a raw <code>%</code>.</p>
+<h3 id="removed"><a class="header" href="#removed">Removed</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  getfenv:
+    removed: true
+</code></pre>
+<p>Used when your standard library is <a href="#base">based off</a> another, and your library removes something from the original.</p>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<p>Structs are used in places such as Roblox Instances. Every Instance in Roblox, for example, declares a <code>:GetChildren()</code> method. We don't want to have to define this everywhere an Instance is declared globally, so instead we just define it once in a struct.</p>
+<p>Structs are defined as fields of <code>structs</code>. Any fields they have will be used for instances of that struct. For example, the Roblox standard library has the struct:</p>
+<pre><code class="language-yaml">---
+structs:
+  Event:
+    Connect:
+      method: true
+      args:
+        - type: function
+</code></pre>
+<p>From there, it can define:</p>
+<pre><code class="language-yaml">globals:
+  workspace.Changed:
+    struct: Event
+</code></pre>
+<p>...and selene will know that <code>workspace.Changed:Connect(callback)</code> is valid, but <code>workspace.Changed:RandomNameHere()</code> is not.</p>
+<h2 id="wildcards"><a class="header" href="#wildcards">Wildcards</a></h2>
+<p>Fields can specify requirements if a field is referenced that is not explicitly named. For example, in Roblox, instances can have arbitrary fields of other instances (<code>workspace.Baseplate</code> indexes an instance named Baseplate inside <code>workspace</code>, but <code>Baseplate</code> is nowhere in the Roblox API).</p>
+<p>We can specify this behavior by using the special <code>"*"</code> field.</p>
+<pre><code class="language-yaml">workspace.*:
+  struct: Instance
+</code></pre>
+<p>This will tell selene "any field accessed from <code>workspace</code> that doesn't exist must be an Instance <a href="#structs">struct</a>".</p>
+<p>Wildcards can even be used in succession. For example, consider the following:</p>
+<pre><code class="language-yaml">script.Name:
+  property: override-fields
+
+script.*.*:
+  property: full-write
+</code></pre>
+<p>Ignoring the wildcard, so far this means:</p>
+<ul>
+<li><code>script.Name = "Hello"</code> <em>will</em> work.</li>
+<li><code>script = nil</code> <em>will not</em> work, because the writability of <code>script</code> is not specified.</li>
+<li><code>script.Name.UhOh</code> <em>will not</em> work, because <code>script.Name</code> does not have fields.</li>
+</ul>
+<p>However, with the wildcard, this adds extra meaning:</p>
+<ul>
+<li><code>script.Foo = 3</code> <em>will not</em> work, because the writability of <code>script.*</code> is not specified.</li>
+<li><code>script.Foo.Bar = 3</code> <em>will</em> work, because <code>script.*.*</code> has full writability.</li>
+<li><code>script.Foo.Bar.Baz = 3</code> <em>will</em> work for the same reason as above.</li>
+</ul>
+<h2 id="internal-properties"><a class="header" href="#internal-properties">Internal properties</a></h2>
+<p>There are some properties that exist in standard library YAMLs that exist specifically for internal purposes. This is merely a reference, but these are not guaranteed to be stable.</p>
+<h3 id="name"><a class="header" href="#name">name</a></h3>
+<p>This specifies the name of the standard library. This is used internally for cases such as only giving Roblox lints if the standard library is named <code>"roblox"</code>.</p>
+<h3 id="last_updated"><a class="header" href="#last_updated">last_updated</a></h3>
+<p>A timestamp of when the standard library was last updated. This is used by the Roblox standard library generator to update when it gets too old.</p>
+<h3 id="last_selene_version"><a class="header" href="#last_selene_version">last_selene_version</a></h3>
+<p>A timestamp of the last selene version that generated this standard library. This is used by the Roblox standard library generator to update when it gets too old.</p>
+<h3 id="roblox_classes"><a class="header" href="#roblox_classes">roblox_classes</a></h3>
+<p>A map of every Roblox class and their properties, for <a href="../lints/roblox_incorrect_roact_usage.html">roblox_incorrect_roact_usage</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../usage/filtering.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../roblox.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../usage/filtering.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../roblox.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

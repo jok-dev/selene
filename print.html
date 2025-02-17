@@ -1,0 +1,1599 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>selene Documentation</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">selene Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="selene"><a class="header" href="#selene">selene</a></h1>
+<p><strong>selene</strong> is a command line tool designed to help write correct and idiomatic Lua code.</p>
+<ul>
+<li><strong>New to selene?</strong> Read the <a href="./motivation.html">motivation behind its creation</a> and the <a href="./cli/index.html">CLI guide</a>. If you already use <a href="https://luacheck.readthedocs.io/en/stable/">Luacheck</a>, you can read the <a href="./luacheck.html">Luacheck comparison and migration guide</a>.</li>
+<li><strong>Don't know what a linter is?</strong> Check out <a href="https://en.wikipedia.org/wiki/Lint_(software)">the wiki on linters</a> about what a linter does and how it's beneficial.</li>
+<li><strong>Existing user?</strong> Read the <a href="https://github.com/Kampfkarren/selene/blob/master/CHANGELOG.md">changelog</a> to learn about any new features or bug fixes.</li>
+<li><strong>Interested in what selene lints for?</strong> Read the <a href="./lints/index.html">list of lints</a>.</li>
+<li><strong>Interested in contributing to selene's codebase?</strong> Read the <a href="./contributing.html">contribution guide</a>.</li>
+<li><strong>Want to discuss selene or get help?</strong> Join the <a href="https://discord.gg/mhtGUS8">Roblox OS Community Discord</a>. Note: selene is not Roblox exclusive, but it started its life for Roblox development.</li>
+</ul>
+<h2 id="license"><a class="header" href="#license">License</a></h2>
+<p>selene and all its source code are licensed under the <a href="https://www.mozilla.org/MPL/2.0/">Mozilla Public License 2.0</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
+<h2 id="because-bugs"><a class="header" href="#because-bugs">Because bugs</a></h2>
+<p>When writing any code, it's very easy to make silly mistakes that end up introducing bugs. A lot of the time, these bugs are hard to track down and debug, and sometimes are even harder to replicate.</p>
+<p>This risk is made ever more real because of the generally lax nature of Lua. Incorrect code is regularly passed off and isn't noticed until something breaks at runtime. Sometimes you'll get a clear error message, and will have to spend time going back, fixing the code, and making sure you actually fixed it. Other times, the effects are more hidden, and instead of getting an error your code will just pass through along, in an incorrect state.</p>
+<p>Take, for example, this code:</p>
+<pre><code class="language-lua">function Player:SwapWeapons()
+    self.CurrentWeapon = self.SideWeapon
+    self.SideWeapon = self.CurrentWeapon
+end
+</code></pre>
+<p>This is code that is technically correct, but is absolutely not what you wanted to write. However, because it is <em>technically</em> correct, Lua will do exactly what you tell it to do, and so...</p>
+<ul>
+<li>Player wants to swap their weapons</li>
+<li>Your code calls <code>player:SwapWeapons()</code></li>
+<li>Their current weapon is set to their side weapon...</li>
+<li>...but their side weapon is set to their current weapon afterwards, which is what they just equipped!</li>
+</ul>
+<p>Uh oh! After debugging this, you realize that you actually meant to write was...</p>
+<pre><code class="language-lua">function Player:SwapWeapons()
+    self.CurrentWeapon, self.SideWeapon = self.SideWeapon, self.CurrentWeapon
+end
+</code></pre>
+<p>If you were using selene, you would've been alerted right away that your original code looked like an <a href="lints/almost_swapped.html"><code>almost_swapped</code></a>.</p>
+<pre><code>error[almost_swapped]: this looks like you are trying to swap `self.CurrentWeapon` and `self.SideWeapon`
+
+   ┌── fail.lua:4:5 ───
+   │
+ 4 │ ╭     self.CurrentWeapon = self.SideWeapon
+ 5 │ │     self.SideWeapon = self.CurrentWeapon
+   │ ╰────────────────────────────────────────^
+   │
+   = try: `self.CurrentWeapon, self.SideWeapon = self.SideWeapon, self.CurrentWeapon`
+</code></pre>
+<p>Other bugs arise because of Lua's lack of typing. While it can feel freeing to developers to not have to specify types everywhere, it makes it easier to mess up and write broken code. For example, take the following code:</p>
+<pre><code class="language-lua">for _, shop in pairs(GoldShop, ItemShop, MedicineShop) do
+</code></pre>
+<p>This code is yet again technically correct, but not what we wanted to do. <code>pairs</code> will take the first argument, <code>GoldShop</code>, and ignore the rest. Worse, the <code>shop</code> variable will now be the values of the contents of <code>GoldShop</code>, not the shop itself. This can cause massive headaches, since although you're likely to get an error later down the line, it's more likely it'll be in the vein of "attempt to index a nil value <code>items</code>" than something more helpful. If you used <code>ipairs</code> instead of <code>pairs</code>, your code inside might just not run, and won't produce an error at all.</p>
+<p>Yet again, selene saves us.</p>
+<pre><code>error[incorrect_standard_library_use]: standard library function `pairs` requires 1 parameters, 3 passed
+
+   ┌── fail.lua:1:16 ───
+   │
+ 1 │ for _, shop in pairs(GoldShop, ItemShop, MedicineShop) do
+   │                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   │
+</code></pre>
+<p>This clues the developer into writing the code they meant to write:</p>
+<pre><code class="language-lua">for _, shop in pairs({ GoldShop, ItemShop, MedicineShop }) do
+</code></pre>
+<h3 id="because-idiomatic-lua"><a class="header" href="#because-idiomatic-lua">Because idiomatic Lua</a></h3>
+<p>While it's nice to write code however you want to, issues can arise when you are working with other people, or plan on open sourcing your work for others to contribute to. It's best for everyone involved if they stuck to the same way of writing Lua.</p>
+<p>Consider this contrived example:</p>
+<pre><code class="language-lua">call(1 / 0)
+</code></pre>
+<p>The person who wrote this code might have known that <code>1 / 0</code> evaluates to <code>math.huge</code>. However, anyone working on that code will likely see it and spend some time figuring out why they wrote the code that way.</p>
+<p>If the developer was using selene, this code would be denied:</p>
+<pre><code>warning[divide_by_zero]: dividing by zero is not allowed, use math.huge instead
+
+   ┌── fail.lua:1:6 ───
+   │
+ 1 │ call(1 / 0)
+   │      ^^^^^
+   │
+</code></pre>
+<p>Furthermore, selene is meant to be easy for developers to add their own lints to. You could create your own lints for your team to prevent behavior that is non-idiomatic to the codebase. For example, let's say you're working on a <a href="https://developer.roblox.com/en-us">Roblox</a> codebase, and you don't want your developers using the data storage methods directly. You could create your own lint so that this code:</p>
+<pre><code class="language-lua">local DataStoreService = game:GetService("DataStoreService")
+</code></pre>
+<p>...creates a warning, discouraging its use. For more information on how to create your own lints, check out the <a href="contributing.html">contribution guide</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="luacheck-comparison"><a class="header" href="#luacheck-comparison">Luacheck Comparison</a></h1>
+<h2 id="selene-vs-luacheck"><a class="header" href="#selene-vs-luacheck">selene vs. luacheck</a></h2>
+<p>selene is not the first Lua linter. The main inspiration behind selene is <a href="https://luacheck.readthedocs.io/en/stable/">luacheck</a>. However, the two have very little in common besides inception.</p>
+<ul>
+<li>selene is actively maintained, while at the time of writing luacheck's last commit was in October 2018.</li>
+<li>selene is written in Rust, while luacheck is written in Lua. In practice, this means that selene is much faster than luacheck while also being able to easily take advantage of features luacheck cannot because of the difficulty of using dependencies in Lua.</li>
+<li>selene is multithreaded, again leading to significantly better performance.</li>
+<li>selene has rich output, while luacheck has basic output.</li>
+</ul>
+<p>selene:</p>
+<pre><code>error[suspicious_reverse_loop]: this loop will only ever run once at most
+
+   ┌── fail.lua:1:9 ───
+   │
+ 1 │ for _ = #x, 1 do
+   │         ^^^^^
+   │
+   = help: try adding `, -1` after `1`
+</code></pre>
+<p>luacheck:</p>
+<pre><code>Checking fail.lua                                 2 warnings
+
+    fail.lua:1:1: numeric for loop goes from #(expr) down to 1 but loop step is not negative
+</code></pre>
+<ul>
+<li>selene uses <a href="https://github.com/toml-lang/toml">TOML</a> files for configuration, while luacheck uses <code>.luacheckrc</code>, which runs Lua.</li>
+<li>selene allows for <a href="./usage/std.html">standard library configuration</a> such as argument types, argument counts, etc, while luacheck only allows knowing that fields exist and can be written to. In practice, this means that selene catches:</li>
+</ul>
+<pre><code class="language-lua">for _, shop in pairs(GoldShop, ItemShop, MedicineShop) do
+
+math.pi()
+</code></pre>
+<p>...while luacheck does not.</p>
+<ul>
+<li>selene has English names for lints instead of arbitrary numbers. In luacheck, you ignore "<a href="https://luacheck.readthedocs.io/en/stable/warnings.html#unbalanced-assignments"><code>211</code></a>", while in selene you ignore "<a href="./lints/unbalanced_assignments.html"><code>unbalanced_assignments</code></a>".</li>
+<li>selene has distinctions for "deny" and "warn", while every luacheck lint is the same.</li>
+<li>selene has a much simpler codebase, and is much easier to add your own lints to.</li>
+<li>selene has optional support and large focus specifically for Roblox development.</li>
+<li>selene will only show you files that lint, luacheck only does this with the <code>-q</code> option (quiet).</li>
+<li>selene <a href="./usage/filtering.html">filters specific lints</a> and applies over code rather than lines, luacheck does not.</li>
+<li>selene has <a href="./lints/index.html">significantly more lints</a>.</li>
+</ul>
+<p>This is not to say selene is objectively better than luacheck, at least not yet.</p>
+<ul>
+<li>luacheck has lints for long lines and whitespace issues, selene does not as it is unclear whether style issues like these are fit for a linter or better under the scope of a Lua beautifier.</li>
+<li>luacheck officially supports versions past Lua 5.1, selene does not yet as there is not much demand.</li>
+<li>luacheck supports the following lints that selene does not yet:
+<ul>
+<li>Unreachable code</li>
+<li>Unused labels (selene does not officially support Lua 5.2 yet)</li>
+<li>Detecting variables that are only ever mutated, but not read</li>
+<li>Using uninitialized variables</li>
+</ul>
+</li>
+</ul>
+<h2 id="migration"><a class="header" href="#migration">Migration</a></h2>
+<p>luacheck does not require much configuration to begin with, so migration should be easy.</p>
+<ul>
+<li>You can configure what lints are allowed in the <a href="./usage/configuration.html#changing-the-severity-of-lints">configuration</a>.</li>
+<li>Do you have a custom standard library (custom globals, functions, etc)? Read the <a href="./usage/std.html">standard library guide</a>.
+<ul>
+<li>Are you a Roblox developer using something like <a href="https://github.com/Quenty/luacheck-roblox/">luacheck-roblox</a>? A featureful standard library for Roblox is generated with every commit on GitHub. TODO: Have a flag in the selene CLI to generate a Roblox standard library a la <code>generate-roblox-std</code>? Should <code>generate-roblox-std</code> be uploaded to crates.io?</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="command-line-interface"><a class="header" href="#command-line-interface">Command Line Interface</a></h1>
+<p><strong>selene</strong> is mostly intended for use as a command line tool.</p>
+<p>In this section, you will learn how to use selene in this manner.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<p><strong>selene</strong> is written in Rust, and the recommended installation method is through the <a href="https://doc.rust-lang.org/cargo/">Cargo package manager</a>.</p>
+<p>To use Cargo, you must first install Rust. <a href="https://rustup.rs/">rustup.rs</a> is a tool that makes this very easy.</p>
+<p>Once you have Rust installed, use either command:</p>
+<p><strong>If you want the most stable version of selene</strong></p>
+<pre><code>cargo install selene
+</code></pre>
+<p><strong>If you want the most up to date version of selene</strong></p>
+<pre><code>cargo install --branch main --git https://github.com/Kampfkarren/selene selene
+</code></pre>
+<h3 id="disabling-roblox-features"><a class="header" href="#disabling-roblox-features">Disabling Roblox features</a></h3>
+<p>selene is built with Roblox specific lints by default. If you don't want these, then pass <code>--no-default-features</code> to the <code>cargo install</code> command.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli-usage"><a class="header" href="#cli-usage">CLI Usage</a></h1>
+<p>If you want to get a quick understanding of the interface, simply type <code>selene --help</code>.</p>
+<pre><code>USAGE:
+    selene [FLAGS] [OPTIONS] &lt;files&gt;...
+    selene &lt;SUBCOMMAND&gt;
+
+FLAGS:
+        --allow-warnings    Pass when only warnings occur
+        --no-exclude        Ignore excludes defined in config
+    -h, --help              Prints help information
+    -n, --no-summary        Suppress summary information
+    -q, --quiet             Display only the necessary information. Equivalent to --display-style="quiet"
+    -V, --version           Prints version information
+
+OPTIONS:
+        --color &lt;color&gt;                     [default: auto]  [possible values: Always, Auto, Never]
+        --config &lt;config&gt;                  A toml file to configure the behavior of selene [default: selene.toml]
+        --display-style &lt;display-style&gt;    Sets the display method [possible values: Json, Json2, Rich, Quiet]
+        --num-threads &lt;num-threads&gt;        Number of threads to run on, default to the numbers of logical cores on your
+                                           system [default: your system's cores]
+        --pattern &lt;pattern&gt;                A glob to match files with to check
+
+ARGS:
+    &lt;files&gt;...
+
+SUBCOMMANDS:
+    generate-roblox-std
+    help                   Prints this message or the help of the given subcommand(s)
+    update-roblox-std
+    upgrade-std
+</code></pre>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic usage</a></h2>
+<p>All unnamed inputs you give to selene will be treated as files to check for.</p>
+<p>If you want to check a folder of files: <code>selene files</code></p>
+<p>If you just want to check one file: <code>selene code.lua</code></p>
+<p>If you want to check multiple files/folders: <code>selene file1 file2 file3 ...</code></p>
+<p>If you want to pipe code to selene using stdin: <code>cat code.lua | selene -</code></p>
+<h2 id="advanced-options"><a class="header" href="#advanced-options">Advanced options</a></h2>
+<p><strong>-q</strong></p>
+<p><strong>--quiet</strong></p>
+<p>Instead of the rich format, only necessary information will be displayed.</p>
+<pre><code>~# selene code.lua
+warning[divide_by_zero]: dividing by zero is not allowed, use math.huge instead
+
+   ┌── code.lua:1:6 ───
+   │
+ 1 │ call(1 / 0)
+   │      ^^^^^
+   │
+
+Results:
+0 errors
+1 warnings
+0 parse errors
+
+~# selene code.lua -q
+code.lua:1:6: warning[divide_by_zero]: dividing by zero is not allowed, use math.huge instead
+
+Results:
+0 errors
+1 warnings
+0 parse errors
+</code></pre>
+<p><strong>--num-threads</strong> <em>num-threads</em></p>
+<p>Specifies the number of threads for selene to use. Defaults to however many cores your CPU has. If you type <code>selene --help</code>, you can see this number because it will show as the default for you.</p>
+<p><strong>--pattern</strong> <em>pattern</em></p>
+<p>A <a href="https://en.wikipedia.org/wiki/Glob_(programming)">glob</a> to match what files selene should check for. For example, if you only wanted to check files that end with <code>.spec.lua</code>, you would input <code>--pattern **/*.spec.lua</code>. Defaults to <code>**/*.lua</code>, meaning "any lua file", or <code>**/*.lua</code> and <code>**/*.luau</code> with the roblox feature flag, meaning "any lua/luau file".</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+<p>In this section, you will learn how to interact with selene from your code and how to fit it to your liking.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
+<p>selene is meant to be easily configurable. You can specify configurations for the entire project as well as for individual lints.</p>
+<p>Configuration files are placed in the directory you are running selene in and are named <strong>selene.toml</strong>. As the name suggests, the configurations use the <a href="https://github.com/toml-lang/toml">Tom's Obvious, Minimal Language (TOML)</a> format. It is recommended you quickly brush up on the syntax, though it is very easy.</p>
+<h2 id="changing-the-severity-of-lints"><a class="header" href="#changing-the-severity-of-lints">Changing the severity of lints</a></h2>
+<p>You can change the severity of lints by entering the following into selene.toml:</p>
+<pre><code class="language-toml">[lints]
+lint_1 = "severity"
+lint_2 = "severity"
+...
+</code></pre>
+<p>Where "severity" is one of the following:</p>
+<ul>
+<li><code>"allow"</code> - Don't check for this lint</li>
+<li><code>"warn"</code> - Warn for this lint</li>
+<li><code>"deny"</code> - Error for this lint</li>
+</ul>
+<p>Note that "deny" and "warn" are effectively the same, only warn will give orange text while error gives red text, and they both have different counters.</p>
+<h2 id="configuring-specific-lints"><a class="header" href="#configuring-specific-lints">Configuring specific lints</a></h2>
+<p>You can configure specific lints by entering the following into selene.toml:</p>
+<pre><code class="language-toml">[config]
+lint1 = ...
+lint2 = ...
+...
+</code></pre>
+<p>Where the value is whatever the special configuration of that lint is. You can learn these on the lints specific page in the <a href="usage/../lints/index.html">list of lints</a>. For example, if we wanted to allow empty if branches if the contents contain comments, then we would write:</p>
+<pre><code class="language-toml">[config]
+empty_if = { comments_count = true }
+</code></pre>
+<h2 id="setting-the-standard-library"><a class="header" href="#setting-the-standard-library">Setting the standard library</a></h2>
+<p>Many lints use standard libraries for either verifying their correct usage or for knowing that variables exist where they otherwise wouldn't.</p>
+<p>By default, selene uses Lua 5.1, though if we wanted to use the Lua 5.2 standard library, we would write:</p>
+<pre><code class="language-toml">std = "lua52"
+</code></pre>
+<p>...at the top of selene.toml. You can learn more about the standard library format on the <a href="usage/./std.html">standard library guide</a>. The standard library given can either be one of the builtin ones (currently only <code>lua51</code> and <code>lua52</code>) or the filename of a standard library file in this format. For example, if we had a file named <code>special.toml</code>, we would write:</p>
+<pre><code class="language-toml">std = "special"
+</code></pre>
+<h3 id="chaining-the-standard-library"><a class="header" href="#chaining-the-standard-library">Chaining the standard library</a></h3>
+<p>We can chain together multiple standard libraries by simply using a plus sign (<code>+</code>) in between the names.</p>
+<p>For example, if we had <code>game.toml</code> and <code>engine.toml</code> standard libraries, we could chain them together like so:</p>
+<pre><code class="language-toml">std = "game+engine"
+</code></pre>
+<h3 id="excluding-files-from-being-linted"><a class="header" href="#excluding-files-from-being-linted">Excluding files from being linted</a></h3>
+<p>It is possible to exclude files from being linted using the exclude option:</p>
+<pre><code class="language-toml">exclude = ["external/*", "*.spec.lua"]
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="filtering"><a class="header" href="#filtering">Filtering</a></h1>
+<p>Lints can be toggled on and off in the middle of code when necessary through the use of special comments.</p>
+<h2 id="allowingdenying-lints-for-a-piece-of-code"><a class="header" href="#allowingdenying-lints-for-a-piece-of-code">Allowing/denying lints for a piece of code</a></h2>
+<p>Suppose we have the following code:</p>
+<pre><code class="language-lua">local something = 1
+</code></pre>
+<p>selene will correctly attribute this as an unused variable:</p>
+<pre><code>warning[unused_variable]: something is assigned a value, but never used
+
+   ┌── code.lua:1:7 ───
+   │
+ 1 │ local something = 1
+   │       ^^^^^^^^^
+   │
+</code></pre>
+<p>However, perhaps we as the programmer have some reason for leaving this unused (and not renaming it to <code>_something</code>). This would be where inline lint filtering comes into play. In this case, we would simply write:</p>
+<pre><code class="language-lua">-- selene: allow(unused_variable)
+local something = 1
+</code></pre>
+<p>This also works with settings other than <code>allow</code>--you can <code>warn</code> or <code>deny</code> lints in the same fashion. For example, you can have a project with the following <code>selene.toml</code> <a href="usage/./configuration.html">configuration</a>:</p>
+<pre><code class="language-toml">[lints]
+unused_variable = "allow" # I'm fine with unused variables in code
+</code></pre>
+<p>...and have this in a separate file:</p>
+<pre><code class="language-lua">-- I'm usually okay with unused variables, but not this one
+-- selene: deny(unused_variable)
+local something = 1
+</code></pre>
+<p>This is applied to the entire piece of code its near, <em>not</em> just the next line. For example:</p>
+<pre><code class="language-lua">-- selene: allow(unused_variable)
+do
+    local foo = 1
+    local bar = 2
+end
+</code></pre>
+<p>...will silence the unused variable warning for both <code>foo</code> and <code>bar</code>.</p>
+<h2 id="allowingdenying-lints-for-an-entire-file"><a class="header" href="#allowingdenying-lints-for-an-entire-file">Allowing/denying lints for an entire file</a></h2>
+<p>If you want to allow/deny a lint for an entire file, you can do this by attaching the following code to the beginning:</p>
+<pre><code class="language-lua">--# selene: allow(lint_name)
+</code></pre>
+<p>The <code>#</code> tells selene that you want to apply these globally.</p>
+<p>These <em>must</em> be before any code, otherwise selene will deny it. For example, the following code:</p>
+<pre><code class="language-lua">local x = 1
+--# selene: allow(unused_variable)
+</code></pre>
+<p>...will cause selene to error:</p>
+<pre><code>warning[unused_variable]: x is assigned a value, but never used
+  ┌─ -:1:7
+  │
+1 │ local x = 1
+  │       ^
+
+error[invalid_lint_filter]: global filters must come before any code
+  ┌─ -:1:1
+  │
+1 │ local x = 1
+  │ ----------- global filter must be before this
+2 │ --# selene: allow(unused_variable)
+</code></pre>
+<h2 id="combining-multiple-lints"><a class="header" href="#combining-multiple-lints">Combining multiple lints</a></h2>
+<p>You can filter multiple lints in two ways:</p>
+<pre><code class="language-lua">-- selene: allow(lint_one)
+-- selene: allow(lint_two)
+
+-- or...
+
+-- selene: allow(lint_one, lint_two)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="standard-library-format"><a class="header" href="#standard-library-format">Standard Library Format</a></h1>
+<p>selene provides a robust standard library format to allow for use with environments other than vanilla Lua. Standard libraries are defined in the form of <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> files.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>For examples of the standard library format, see:</p>
+<ul>
+<li><a href="https://github.com/Kampfkarren/selene/blob/main/selene-lib/default_std/lua51.yml"><code>lua51.yml</code></a> - The default standard library for Lua 5.1</li>
+<li><a href="https://github.com/Kampfkarren/selene/blob/main/selene-lib/default_std/lua52.yml"><code>lua52.yml</code></a> - A standard library for Lua 5.2's additions and removals. Reference this if your standard library is based off another (it most likely is).</li>
+<li><a href="https://gist.github.com/Kampfkarren/dff2dc17cc30d68a48510da58fff2381"><code>roblox.yml</code></a> - A standard library for Roblox that incorporates all the advanced features of the format. If you are a Roblox developer, don't use this as anything other than reference--an up to date version of this library is automatically generated.</li>
+</ul>
+<h2 id="base"><a class="header" href="#base">base</a></h2>
+<p>Used for specifying what standard library to be based off of. This supports both builtin libraries (lua51, lua52, lua53, lua54, roblox), as well as any standard libraries that can be found in the current directory.</p>
+<pre><code class="language-yaml">--- # This begins a YAML file
+base: lua51 # We will be extending off of Lua 5.1.
+</code></pre>
+<h2 id="lua_versions"><a class="header" href="#lua_versions">lua_versions</a></h2>
+<p>Used for specifying the versions of Lua you support for the purpose of supporting the syntax of those dialects. If empty, will default to 5.1.</p>
+<p>Supports the following options:</p>
+<ul>
+<li><code>lua51</code> - Lua 5.1</li>
+<li><code>lua52</code> - Lua 5.2</li>
+<li><code>lua53</code> - Lua 5.3</li>
+<li><code>lua54</code> - Lua 5.4</li>
+<li><code>luau</code> - <a href="https://luau-lang.org">Luau</a></li>
+<li><code>luajit</code> - LuaJIT</li>
+</ul>
+<p>Usually you only need to specify one--for example, <code>lua54</code> will give Lua 5.4 syntax and all versions prior. That means that if you specify it, it will look something like:</p>
+<pre><code class="language-yml">lua_versions:
+- luajit
+</code></pre>
+<p>If you are extending off a library that specifies it (like <code>lua51</code>, etc) then you do not need this. If you specify it while overriding a library, it will override it.</p>
+<h2 id="globals"><a class="header" href="#globals">globals</a></h2>
+<p>This is where the magic happens. The <code>globals</code> field is a dictionary where the keys are the globals you want to define. The value you give tells selene what the value can be, do, and provide.</p>
+<p>If your standard library is based off another, overriding something defined there will use your implementation over the original.</p>
+<h3 id="any"><a class="header" href="#any">Any</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  foo:
+    any: true
+</code></pre>
+<p>This specifies that the field can be used in any possible way, meaning that <code>foo.x</code>, <code>foo:y()</code>, etc will all validate.</p>
+<h3 id="functions"><a class="header" href="#functions">Functions</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  tonumber:
+    args:
+      - type: any
+      - type: number
+        required: false
+</code></pre>
+<p>A field is a function if it contains an <code>args</code> and/or <code>method</code> field.</p>
+<p>If <code>method</code> is specified as <code>true</code> and the function is inside a table, then it will require the function be called in the form of <code>Table:FunctionName()</code>, instead of <code>Table.FunctionName()</code>.</p>
+<p><code>args</code> is an array of arguments, in order of how they're used in the function. An argument is in the form of:</p>
+<pre><code>required?: false | true | string;
+type: "any" | "bool" | "function" | "nil"
+    | "number" | "string" | "table" | "..."
+    | string[] | { "display": string }
+</code></pre>
+<h4 id="required"><a class="header" href="#required">"required"</a></h4>
+<ul>
+<li><code>true</code> - The default, this argument is required.</li>
+<li><code>false</code> - This argument is optional.</li>
+<li>A string - This argument is required, and not using it will give this as the reason why.</li>
+</ul>
+<h4 id="observes"><a class="header" href="#observes">"observes"</a></h4>
+<p>This field is used for allowing smarter introspection of how the argument given is used.</p>
+<ul>
+<li>"read-write" - The default. This argument is potentially both written to and read from.</li>
+<li>"read" - This argument is only read from. Currently unused.</li>
+<li>"write" - This argument is only written to. Used by <code>unused_variable</code> to assist in detecting a variable only being written to, even if passed into a function.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-yml"> table.insert:
+  args:
+    - type: table
+      observes: write # This way, `table.insert(x, 1)` doesn't count as a read to `x`
+    - type: any
+    - required: false
+      type: any
+</code></pre>
+<h4 id="must_use"><a class="header" href="#must_use">"must_use"</a></h4>
+<p>This field is used for checking if the return value of a function is used.</p>
+<ul>
+<li><code>false</code> - The default. The return value of this function does not need to be used.</li>
+<li><code>true</code> - The return value of this function must be used.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-yml">  tostring:
+    args:
+      - type: any
+    must_use: true
+</code></pre>
+<h4 id="argument-types"><a class="header" href="#argument-types">Argument types</a></h4>
+<ul>
+<li><code>"any"</code> - Allows any value.</li>
+<li><code>"bool"</code>, <code>"function"</code>, <code>"nil"</code>, <code>"number"</code>, <code>"string"</code>, <code>"table"</code> - Expects a value of the respective type.</li>
+<li><code>"..."</code> - Allows any number of variables after this one. If <code>required</code> is true (it is by default), then this will lint if no additional arguments are given. It is incorrect to have this in the middle.</li>
+<li>Constant list of strings - Will check if the value provided is one of the strings in the list. For example, <code>collectgarbage</code> only takes one of a few exact string arguments--doing <code>collectgarbage("count")</code> will work, but <code>collectgarbage("whoops")</code> won't.</li>
+<li><code>{ "display": string }</code> - Used when no constant could possibly be correct. If a constant is used, selene will tell the user that an argument of the type (display) is required. For an example, the Roblox method <code>Color3.toHSV</code> expects a <code>Color3</code> object--no constant inside it could be correct, so this is defined as:</li>
+</ul>
+<pre><code class="language-yaml">---
+globals:
+  Color3.toHSV:
+    args:
+      - type:
+          display: Color3
+</code></pre>
+<h3 id="properties"><a class="header" href="#properties">Properties</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  _VERSION:
+    property: read-only
+</code></pre>
+<p>Specifies that a property exists. For example, <code>_VERSION</code> is available as a global and doesn't have any fields of its own, so it is just defined as a property.</p>
+<p>The same goes for <code>_G</code>, which is defined as:</p>
+<pre><code class="language-yaml">_G:
+  property: new-fields
+</code></pre>
+<p>The value of property tells selene how it can be mutated and used:</p>
+<ul>
+<li><code>"read-only"</code> - New fields cannot be added or set, and the variable itself cannot be redefined.</li>
+<li><code>"new-fields"</code> - New fields can be added and set, but variable itself cannot be redefined. In the case of _G, it means that <code>_G = "foo"</code> is linted against.</li>
+<li><code>"override-fields"</code> - New fields can't be added, but entire variable can be overridden. In the case of Roblox's <code>Instance.Name</code>, it means we can do <code>Instance.Name = "Hello"</code>, but not <code>Instance.Name.Call()</code>.</li>
+<li><code>"full-write"</code> - New fields can be added and entire variable can be overridden.</li>
+</ul>
+<h3 id="struct"><a class="header" href="#struct">Struct</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  game:
+    struct: DataModel
+</code></pre>
+<p>Specifies that the field is an instance of a <a href="usage/std.html#structs">struct</a>. The value is the name of the struct.</p>
+<h3 id="tables"><a class="header" href="#tables">Tables</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  math.huge:
+    property: read-only
+  math.pi:
+    property: read-only
+</code></pre>
+<p>A field is understood as a table if it has fields of its own. Notice that <code>math</code> is not defined anywhere, but its fields are. This will create an implicit <code>math</code> with the property writability of <code>read-only</code>.</p>
+<h3 id="deprecated"><a class="header" href="#deprecated">Deprecated</a></h3>
+<p>Any field or arg can have a deprecation notice added to it, which will then be read by <a href="usage/../lints/deprecated.html">the deprecated lint</a>.</p>
+<pre><code class="language-yaml">---
+globals:
+  table.getn:
+    args:
+      - type: table
+      - type: number
+    deprecated:
+      message: "`table.getn` has been superseded by #."
+      replace:
+        - "#%1"
+</code></pre>
+<p>The deprecated field consists of two subfields.</p>
+<p><code>message</code> is required, and is a human readable explanation of what the deprecation is, and potentially why.</p>
+<p><code>replace</code> is an optional array of replacements. The most relevant replacement is suggested to the user. If used with a function, then every parameter of the function will be provided.</p>
+<p>For instance, since <code>table.getn</code>'s top replacement is <code>#%1</code>:</p>
+<ul>
+<li><code>table.getn(x)</code> will suggest <code>#x</code></li>
+<li><code>table.getn()</code> will not suggest anything, as there is no relevant suggestion</li>
+</ul>
+<p>You can also use <code>%...</code> to list every argument, separated by commas.</p>
+<p>The following:</p>
+<pre><code class="language-yaml">---
+globals:
+  call:
+    deprecated:
+      message: "call will be removed in the next version"
+      replace:
+        - "newcall(%...)"
+    args:
+      - type: "..."
+        required: false
+</code></pre>
+<p>...will suggest <code>newcall(1, 2, 3)</code> for <code>call(1, 2, 3)</code>, and <code>newcall()</code> for <code>call()</code>.</p>
+<p>You can also use <code>%%</code> to write a raw <code>%</code>.</p>
+<h3 id="removed"><a class="header" href="#removed">Removed</a></h3>
+<pre><code class="language-yaml">---
+globals:
+  getfenv:
+    removed: true
+</code></pre>
+<p>Used when your standard library is <a href="usage/std.html#base">based off</a> another, and your library removes something from the original.</p>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<p>Structs are used in places such as Roblox Instances. Every Instance in Roblox, for example, declares a <code>:GetChildren()</code> method. We don't want to have to define this everywhere an Instance is declared globally, so instead we just define it once in a struct.</p>
+<p>Structs are defined as fields of <code>structs</code>. Any fields they have will be used for instances of that struct. For example, the Roblox standard library has the struct:</p>
+<pre><code class="language-yaml">---
+structs:
+  Event:
+    Connect:
+      method: true
+      args:
+        - type: function
+</code></pre>
+<p>From there, it can define:</p>
+<pre><code class="language-yaml">globals:
+  workspace.Changed:
+    struct: Event
+</code></pre>
+<p>...and selene will know that <code>workspace.Changed:Connect(callback)</code> is valid, but <code>workspace.Changed:RandomNameHere()</code> is not.</p>
+<h2 id="wildcards"><a class="header" href="#wildcards">Wildcards</a></h2>
+<p>Fields can specify requirements if a field is referenced that is not explicitly named. For example, in Roblox, instances can have arbitrary fields of other instances (<code>workspace.Baseplate</code> indexes an instance named Baseplate inside <code>workspace</code>, but <code>Baseplate</code> is nowhere in the Roblox API).</p>
+<p>We can specify this behavior by using the special <code>"*"</code> field.</p>
+<pre><code class="language-yaml">workspace.*:
+  struct: Instance
+</code></pre>
+<p>This will tell selene "any field accessed from <code>workspace</code> that doesn't exist must be an Instance <a href="usage/std.html#structs">struct</a>".</p>
+<p>Wildcards can even be used in succession. For example, consider the following:</p>
+<pre><code class="language-yaml">script.Name:
+  property: override-fields
+
+script.*.*:
+  property: full-write
+</code></pre>
+<p>Ignoring the wildcard, so far this means:</p>
+<ul>
+<li><code>script.Name = "Hello"</code> <em>will</em> work.</li>
+<li><code>script = nil</code> <em>will not</em> work, because the writability of <code>script</code> is not specified.</li>
+<li><code>script.Name.UhOh</code> <em>will not</em> work, because <code>script.Name</code> does not have fields.</li>
+</ul>
+<p>However, with the wildcard, this adds extra meaning:</p>
+<ul>
+<li><code>script.Foo = 3</code> <em>will not</em> work, because the writability of <code>script.*</code> is not specified.</li>
+<li><code>script.Foo.Bar = 3</code> <em>will</em> work, because <code>script.*.*</code> has full writability.</li>
+<li><code>script.Foo.Bar.Baz = 3</code> <em>will</em> work for the same reason as above.</li>
+</ul>
+<h2 id="internal-properties"><a class="header" href="#internal-properties">Internal properties</a></h2>
+<p>There are some properties that exist in standard library YAMLs that exist specifically for internal purposes. This is merely a reference, but these are not guaranteed to be stable.</p>
+<h3 id="name"><a class="header" href="#name">name</a></h3>
+<p>This specifies the name of the standard library. This is used internally for cases such as only giving Roblox lints if the standard library is named <code>"roblox"</code>.</p>
+<h3 id="last_updated"><a class="header" href="#last_updated">last_updated</a></h3>
+<p>A timestamp of when the standard library was last updated. This is used by the Roblox standard library generator to update when it gets too old.</p>
+<h3 id="last_selene_version"><a class="header" href="#last_selene_version">last_selene_version</a></h3>
+<p>A timestamp of the last selene version that generated this standard library. This is used by the Roblox standard library generator to update when it gets too old.</p>
+<h3 id="roblox_classes"><a class="header" href="#roblox_classes">roblox_classes</a></h3>
+<p>A map of every Roblox class and their properties, for <a href="usage/../lints/roblox_incorrect_roact_usage.html">roblox_incorrect_roact_usage</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="roblox-guide"><a class="header" href="#roblox-guide">Roblox Guide</a></h1>
+<p>selene is built with Roblox development in mind, and has special features for Roblox developers.</p>
+<p>If you try to run selene on a Roblox codebase, you'll get a bunch of errors saying things such as "<code>game</code> is not defined". This is because these are Roblox specific globals that selene does not know about. You'll need to install the Roblox <a href="./usage/configuration.html">standard library</a> in order to fix these issues, as well as get Roblox specific lints.</p>
+<h2 id="installation-1"><a class="header" href="#installation-1">Installation</a></h2>
+<p>Thankfully, this process is very simple. All you need to do is edit your <code>selene.toml</code> (or create one) and add the following:</p>
+<pre><code class="language-toml">std = "roblox"
+</code></pre>
+<p>The next time you run selene, or if you use the Visual Studio Code extension and start typing Lua code, a Roblox standard library will be automatically generated and used. This is an automatic process that occurs whenever you don't have a cached standard library file and your <code>selene.toml</code> has <code>std = "roblox"</code>.</p>
+<h2 id="updating-definitions"><a class="header" href="#updating-definitions">Updating definitions</a></h2>
+<p>The Roblox standard library file is updated automatically every 6 hours. If you need an update faster than that, you can run <code>selene update-roblox-std</code> manually.</p>
+<h2 id="testez-support"><a class="header" href="#testez-support">TestEZ Support</a></h2>
+<p>Roblox has provided an open source testing utility called <a href="https://roblox.github.io/testez/">TestEZ</a>, which allows you to write unit tests for your code. Writing unit tests is good practice, but selene will get angry at you if you don't include a <code>testez.yml</code> file and set the standard library to the following:</p>
+<p><code>std = "roblox+testez"</code></p>
+<p>But first you'll need to create a <code>testez.yml</code> file, which you can do so <a href="https://gist.github.com/Kampfkarren/f2dddc2ebfa4e0662e44b8702e519c2d">with this template</a>.</p>
+<h2 id="pinned-standard-library"><a class="header" href="#pinned-standard-library">Pinned standard library</a></h2>
+<p>There may be cases where you would rather not have selene automatically update the Roblox standard library, such as if speed is critically important and you want to limit potential internet access (generating the standard library requires an active internet connection).</p>
+<p>selene supports "pinning" the standard library to a specific version.</p>
+<p>Add the following to your <code>selene.toml</code> configuration:</p>
+<pre><code class="language-toml"># `floating` by default, meaning it is stored in a cache folder on your system
+roblox-std-source = "pinned"
+</code></pre>
+<p>This will generate the standard library file into <code>roblox.yml</code> where it is run.</p>
+<p>You can also create a <code>roblox.yml</code> file manually with <code>selene generate-roblox-std</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contributing"><a class="header" href="#contributing">Contributing</a></h1>
+<p>selene is written in Rust, so knowledge of the ecosystem is expected.</p>
+<p>selene uses <a href="https://github.com/Kampfkarren/full-moon">Full Moon</a> to parse the Lua code losslessly, meaning whitespace and comments are preserved. You can read the full documentation for full-moon on its <a href="https://docs.rs/full_moon/latest/full_moon/">docs.rs</a> page.</p>
+<p>TODO: Upload selene-lib on crates.io and link the docs.rs page for that as well as throughout the rest of this article.</p>
+<h2 id="writing-a-lint"><a class="header" href="#writing-a-lint">Writing a lint</a></h2>
+<p>In selene, lints are created in isolated modules. To start, create a file in <code>selene-lib/src/lints</code> with the name of your lint. In this example, we're going to call the lint <code>cool_lint.rs</code>.</p>
+<p>Let's now understand what a lint consists of. selene takes lints in the form of structs that implement the <code>Lint</code> trait. The <code>Lint</code> trait expects:</p>
+<ul>
+<li>A <code>Config</code> associated type that defines what the configuration format is expected to be. Whatever you pass must be <a href="https://serde.rs/">deserializable</a>.</li>
+<li>An <code>Error</code> associated type that implements <a href="https://doc.rust-lang.org/std/error/trait.Error.html"><code>std::error::Error</code></a>. This is used if configurations can be invalid (such as a parameter only being a number within a range). Most of the time, configurations cannot be invalid (other than deserializing errors, which are handled by selene), and so you can set this to <a href="https://doc.rust-lang.org/std/convert/enum.Infallible.html"><code>std::convert::Infallible</code></a>.</li>
+<li>A <code>SEVERITY</code> constant which is either <code>Severity::Error</code> or <code>Severity::Warning</code>. Use <code>Error</code> if the code is positively impossible to be correct.</li>
+<li>A <code>LINT_TYPE</code> constant which is either <code>Complexity</code>, <code>Correctness</code>, <code>Performance</code>, or <code>Style</code>. So far not used for anything.</li>
+<li>A <code>new</code> function with the signature <code>fn new(config: Self::Config) -&gt; Result&lt;Self, Self::Error&gt;</code>. With the selene CLI, this is called once.</li>
+<li>A <code>pass</code> function with the signature <code>fn pass(&amp;self, ast: &amp;full_moon::ast::Ast, context: &amp;Context, ast_context: &amp;AstContext) -&gt; Vec&lt;Diagnostic&gt;</code>. The <code>ast</code> argument is the full-moon representation of the code. The <code>context</code> argument provides optional additional information, such as the standard library being used. The <code>ast_context</code> argument provides context specific to that AST, such as its scopes. Any <code>Diagnostic</code> structs returned here are displayed to the user.</li>
+</ul>
+<p>For our purposes, we're going to write:</p>
+<pre><code class="language-rs">use super::*;
+use std::convert::Infallible;
+
+struct CoolLint;
+
+impl Lint for CoolLint {
+    type Config = ();
+    type Error = Infallible;
+
+    const SEVERITY: Severity = Severity::Warning;
+    const LINT_TYPE: LintType = LintType::Style;
+
+    fn new(_: Self::Config) -&gt; Result&lt;Self, Self::Error&gt; {
+        Ok(CoolLint)
+    }
+
+    fn pass(&amp;self, ast: &amp;Ast, _: &amp;Context, _: &amp;AstContext) -&gt; Vec&lt;Diagnostic&gt; {
+        unimplemented!()
+    }
+}
+</code></pre>
+<p>The implementation of <code>pass</code> is completely up to you, but there are a few common patterns.</p>
+<ul>
+<li>Creating a visitor over the ast provided and creating diagnostics based off of that. See <a href="https://github.com/Kampfkarren/selene/blob/master/selene-lib/src/lints/divide_by_zero.rs"><code>divide_by_zero</code></a> and <a href="https://github.com/Kampfkarren/selene/blob/master/selene-lib/src/lints/suspicious_reverse_loop.rs"><code>suspicious_reverse_loop</code></a> for straight forward examples.</li>
+<li>Using the <code>ScopeManager</code> struct to lint based off of usage of variables and references. See <a href="https://github.com/Kampfkarren/selene/blob/master/selene-lib/src/lints/shadowing.rs"><code>shadowing</code></a> and <a href="https://github.com/Kampfkarren/selene/blob/master/selene-lib/src/lints/global_usage.rs"><code>global_usage</code></a>.</li>
+</ul>
+<h3 id="getting-selene-to-recognize-the-new-lint"><a class="header" href="#getting-selene-to-recognize-the-new-lint">Getting selene to recognize the new lint</a></h3>
+<p>Now that we have our lint, we have to make sure selene actually knows to use it. There are two places you need to update.</p>
+<p>In selene-lib/src/lib.rs, search for <code>use_lints!</code>. You will see something such as:</p>
+<pre><code class="language-rs">use_lints! {
+    almost_swapped: lints::almost_swapped::AlmostSwappedLint,
+    divide_by_zero: lints::divide_by_zero::DivideByZeroLint,
+    empty_if: lints::empty_if::EmptyIfLint,
+    ...
+}
+</code></pre>
+<p>Put your lint in this list (alphabetical order) as the following format:</p>
+<pre><code>lint_name: lints::module_name::LintObject,
+</code></pre>
+<p>For us, this would be:</p>
+<pre><code>cool_lint: lints::cool_lint::CoolLint,
+</code></pre>
+<p>Next, in <code>selene-lib/src/lints.rs</code>, search for <code>pub mod</code>, and you will see:</p>
+<pre><code class="language-rs">pub mod almost_swapped;
+pub mod divide_by_zero;
+pub mod empty_if;
+...
+</code></pre>
+<p>Put your module name in this list, also in alphabetical order.</p>
+<pre><code class="language-rs">pub mod almost_swapped;
+pub mod cool_lint;
+pub mod divide_by_zero;
+pub mod empty_if;
+...
+</code></pre>
+<p>And we're done! You should be able to <code>cargo build --bin selene</code> and be able to use your new lint.</p>
+<h3 id="writing-tests"><a class="header" href="#writing-tests">Writing tests</a></h3>
+<p>The selene codebase uses tests extensively for lints. It means we never have to actually build the CLI tool in order to test, and we can make sure we don't have any regressions. <strong>Testing is required if you want to submit your lint to the selene codebase.</strong></p>
+<p>To write a simple test, create a folder in <code>selene-lib/tests</code> with the name of your lint. Then, create as many <code>.lua</code> files as you want to test. These should contain both cases that do and do not lint. For our cases, we're going to assume our test is called <code>cool_lint.lua</code>.</p>
+<p>Then, in your lint module, add at the bottom:</p>
+<pre><code class="language-rs">#[cfg(test)]
+mod tests {
+    use super::{super::test_util::test_lint, *};
+
+    #[test]
+    fn test_cool_lint() {
+        test_lint(
+            CoolLint::new(()).unwrap(),
+            "cool_lint",
+            "cool_lint",
+        );
+    }
+}
+</code></pre>
+<p>Let's discuss what this code means, assuming you're familiar with <a href="https://doc.rust-lang.org/book/ch11-00-testing.html">the way tests are written and performed in Rust</a>.</p>
+<p>The <code>test_lint</code> function is the easiest way to test that a lint works. It'll search the source code we made before, run selene on it (only your lint), and check its results with the existing <code>[filename].stderr</code> file, or create one if it does not yet exist.</p>
+<p>The first argument is the lint object to use. <code>CoolLint::new(())</code> just means "create <code>CoolLint</code> with a configuration of <code>()</code>". If your lint specifies a configuration, this will instead be something such as <code>CoolLintConfig::default()</code> or whatever you're specifically testing.</p>
+<p>The <code>.unwrap()</code> is just because <code>CoolLint::new</code> returns a <code>Result</code>. If you want to test configuration errors, you can avoid <code>test_lint</code> altogether and just test <code>CoolLint::new(...).is_err()</code> directly.</p>
+<p>The first <code>"cool_lint"</code> is the name of the folder we created. The second <code>"cool_lint"</code> is the name of the <em>Lua file</em> we created.</p>
+<p>Now, just run <code>cargo test</code>, and a <code>.stderr</code> file will be automatically generated! You can manipulate it however you see fit as well as modifying your lint, and so long as the file is there, selene will make sure that its accurate.</p>
+<p>Optionally, you can add a <code>.std.toml</code> with the same name as the test next to the lua file, where you can specify a custom <a href="./usage/std.html">standard library</a> to use. If you do not, the Lua 5.1 standard library will be used.</p>
+<h3 id="documenting-it"><a class="header" href="#documenting-it">Documenting it</a></h3>
+<p>This step is only if you are contributing to the selene codebase, and not just writing personal lints (though I'm sure your other programmers would love if you did this).</p>
+<p>To document a new lint, edit <code>docs/src/SUMMARY.md</code>, and add your lint to the table of contents along the rest. As with everything else, make sure it's in alphabetical order.</p>
+<p>Then, edit the markdown file it creates (if you have <code>mdbook serve</code> on, it'll create it for you), and write it in this format:</p>
+<pre><code># lint_name
+## What it does
+Explain what your lint does, simply.
+
+## Why this is bad
+Explain why a user would want to lint this.
+
+## Configuration
+Specify any configuration if it exists.
+
+## Example
+```lua
+-- Bad code here
+```
+
+...should be written as...
+
+```lua
+-- Good code here
+```
+
+## Remarks
+If there's anything else a user should know when using this lint, write it here.
+</code></pre>
+<p>This isn't a strict format, and you can mess with it as appropriate. For example, <code>standard_library</code> does not have a "Why this is bad" section as not only is it a very encompassing lint, but it should be fairly obvious. Many lints don't specify a "...should be written as..." as it is either something with various potential fixes (such as <a href="./lints/global_usage.html"><code>global_usage</code></a>) or because the "good code" is just removing parts entirely (such as <a href="./lints/unbalanced_assignments.html"><code>unbalanced_assignments</code></a>).</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lints"><a class="header" href="#lints">Lints</a></h1>
+<p>The following is the list of lints that selene will check for in your code.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="almost_swapped"><a class="header" href="#almost_swapped">almost_swapped</a></h1>
+<h2 id="what-it-does"><a class="header" href="#what-it-does">What it does</a></h2>
+<p>Checks for <code>foo = bar; bar = foo</code> sequences.</p>
+<h2 id="why-this-is-bad"><a class="header" href="#why-this-is-bad">Why this is bad</a></h2>
+<p>This looks like a failed attempt to swap.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<pre><code class="language-lua">a = b
+b = a
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">a, b = b, a
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="constant_table_comparison"><a class="header" href="#constant_table_comparison">constant_table_comparison</a></h1>
+<h2 id="what-it-does-1"><a class="header" href="#what-it-does-1">What it does</a></h2>
+<p>Checks for direct comparisons with constant tables.</p>
+<h2 id="why-this-is-bad-1"><a class="header" href="#why-this-is-bad-1">Why this is bad</a></h2>
+<p>This will always fail.</p>
+<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
+<pre><code class="language-lua">if x == { "a", "b", "c" } then
+</code></pre>
+<p>...will never pass.</p>
+<pre><code class="language-lua">if x == {} then
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">if next(x) == nil then
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="deprecated-1"><a class="header" href="#deprecated-1">deprecated</a></h1>
+<h2 id="what-it-does-2"><a class="header" href="#what-it-does-2">What it does</a></h2>
+<p>Checks for use of deprecated fields and functions, as configured <a href="lints/../usage/std.html#deprecated">by your standard library</a>.</p>
+<h2 id="why-this-is-bad-2"><a class="header" href="#why-this-is-bad-2">Why this is bad</a></h2>
+<p>Deprecated fields may not be getting any support, or even face the possibility of being removed.</p>
+<h2 id="configuration-1"><a class="header" href="#configuration-1">Configuration</a></h2>
+<p><code>allow</code> - A list of patterns where the deprecated lint will not throw. For instance, <code>["table.getn"]</code> will allow you to use <code>table.getn</code>, even though it is deprecated. This supports wildcards, so <code>table.*</code> will allow both <code>table.getn</code> and <code>table.foreach</code>.</p>
+<h2 id="example-2"><a class="header" href="#example-2">Example</a></h2>
+<pre><code class="language-lua">local count = table.getn(x)
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">local count = #x
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="divide_by_zero"><a class="header" href="#divide_by_zero">divide_by_zero</a></h1>
+<h2 id="what-it-does-3"><a class="header" href="#what-it-does-3">What it does</a></h2>
+<p>Checks for division by zero. Allows <code>0 / 0</code> as a way to get <a href="https://en.wikipedia.org/wiki/NaN">nan</a>.</p>
+<h2 id="why-this-is-bad-3"><a class="header" href="#why-this-is-bad-3">Why this is bad</a></h2>
+<p><code>n / 0</code> equals <code>math.huge</code> when n is positive, and <code>-math.huge</code> when n is negative. Use these values directly instead, as using the <code>/ 0</code> way is confusing to read and non-idiomatic.</p>
+<h2 id="example-3"><a class="header" href="#example-3">Example</a></h2>
+<pre><code class="language-lua">print(1 / 0)
+print(-1 / 0)
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">print(math.huge)
+print(-math.huge)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="duplicate_keys"><a class="header" href="#duplicate_keys">duplicate_keys</a></h1>
+<h2 id="what-it-does-4"><a class="header" href="#what-it-does-4">What it does</a></h2>
+<p>Checks for duplicate keys being defined inside of tables.</p>
+<h2 id="why-this-is-bad-4"><a class="header" href="#why-this-is-bad-4">Why this is bad</a></h2>
+<p>Tables with a key defined more than once will only use one of the values.</p>
+<h2 id="example-4"><a class="header" href="#example-4">Example</a></h2>
+<pre><code class="language-lua">local foo = {
+    a = 1,
+    b = 5,
+    ["a"] = 3, -- duplicate definition
+    c = 3,
+    b = 1, -- duplicate definition
+}
+
+local bar = {
+    "foo",
+    "bar",
+    [1524] = "hello",
+    "baz",
+    "foobar",
+    [2] = "goodbye", -- duplicate to `bar` which has key `2`
+}
+</code></pre>
+<h2 id="remarks"><a class="header" href="#remarks">Remarks</a></h2>
+<p>Only handles keys which constant string/number literals or named (such as <code>{ a = true }</code>).
+Array-like values are also handled, where <code>{"foo"}</code> is implicitly handled as <code>{ [1] = "foo" }</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="empty_if"><a class="header" href="#empty_if">empty_if</a></h1>
+<h2 id="what-it-does-5"><a class="header" href="#what-it-does-5">What it does</a></h2>
+<p>Checks for empty if blocks.</p>
+<h2 id="why-this-is-bad-5"><a class="header" href="#why-this-is-bad-5">Why this is bad</a></h2>
+<p>You most likely forgot to write code in there or commented it out without commenting out the if statement itself.</p>
+<h2 id="configuration-2"><a class="header" href="#configuration-2">Configuration</a></h2>
+<p><code>comments_count</code> (default: <code>false</code>) - A bool that determines whether or not if statements with exclusively comments are empty.</p>
+<h2 id="example-5"><a class="header" href="#example-5">Example</a></h2>
+<pre><code class="language-lua">-- Each of these branches count as an empty if.
+if a then
+elseif b then
+else
+end
+
+if a then
+    -- If comments_count is true, this will not count as empty.
+end
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="empty_loop"><a class="header" href="#empty_loop">empty_loop</a></h1>
+<h2 id="what-it-does-6"><a class="header" href="#what-it-does-6">What it does</a></h2>
+<p>Checks for empty loop blocks.</p>
+<h2 id="why-this-is-bad-6"><a class="header" href="#why-this-is-bad-6">Why this is bad</a></h2>
+<p>You most likely forgot to write code in there or commented it out without commenting out the loop statement itself.</p>
+<h2 id="configuration-3"><a class="header" href="#configuration-3">Configuration</a></h2>
+<p><code>comments_count</code> (default: <code>false</code>) - A bool that determines whether or not if statements with exclusively comments are empty.</p>
+<h2 id="example-6"><a class="header" href="#example-6">Example</a></h2>
+<pre><code class="language-lua">-- Counts as an empty loop
+for _ in {} do
+end
+
+for _ in {} do
+    -- If comments_count is true, this will not count as empty.
+end
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="global_usage"><a class="header" href="#global_usage">global_usage</a></h1>
+<h2 id="what-it-does-7"><a class="header" href="#what-it-does-7">What it does</a></h2>
+<p>Prohibits use of <code>_G</code>.</p>
+<h2 id="why-this-is-bad-7"><a class="header" href="#why-this-is-bad-7">Why this is bad</a></h2>
+<p><code>_G</code> is global mutable state, which is heavily regarded as harmful. You should instead refactor your code to be more modular in nature.</p>
+<h2 id="configuration-4"><a class="header" href="#configuration-4">Configuration</a></h2>
+<p><code>ignore_pattern</code> - A <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> for variables that are allowed to be global variables. The default disallows all global variables regardless of their name.</p>
+<h2 id="remarks-1"><a class="header" href="#remarks-1">Remarks</a></h2>
+<p>If you are using the Roblox standard library, use of <code>shared</code> is prohibited under this lint.</p>
+<h2 id="example-7"><a class="header" href="#example-7">Example</a></h2>
+<pre><code class="language-lua">_G.foo = 1
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="high_cyclomatic_complexity"><a class="header" href="#high_cyclomatic_complexity">high_cyclomatic_complexity</a></h1>
+<h2 id="what-it-does-8"><a class="header" href="#what-it-does-8">What it does</a></h2>
+<p>Measures the <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a> of a function to see if it exceeds the configure maximum.</p>
+<h2 id="why-this-is-bad-8"><a class="header" href="#why-this-is-bad-8">Why this is bad</a></h2>
+<p>High branch complexity can lead to functions that are hard to test, and harder to reason about.</p>
+<h2 id="configuration-5"><a class="header" href="#configuration-5">Configuration</a></h2>
+<p><code>maximum_complexity</code> (default: <code>40</code>) - A number that determines the maximum threshold for cyclomatic complexity, beyond which the lint will report.</p>
+<h2 id="example-8"><a class="header" href="#example-8">Example</a></h2>
+<pre><code class="language-lua">function MyComponent(props)
+    if props.option1 == "enum_value1" then          -- 1st path
+        return React.createElement("Instance")
+    elseif props.option1 == "enum_value2"           -- 2nd path
+      or props.option2 == nil then                  -- 3rd path
+        return React.createElement(
+          "TextLabel",
+          { Text = if _G.__DEV__ then "X" else "Y" }-- 4th path
+        )
+    else
+        return if props.option2 == true             -- 5th path
+          then React.createElement("Frame")
+          else nil
+    end
+end
+</code></pre>
+<h2 id="remarks-2"><a class="header" href="#remarks-2">Remarks</a></h2>
+<p>This lint is off by default. In order to enable it, add this to your selene.toml:</p>
+<pre><code class="language-toml">[lints]
+high_cyclomatic_complexity = "warn" # Or "deny"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="if_same_then_else"><a class="header" href="#if_same_then_else">if_same_then_else</a></h1>
+<h2 id="what-it-does-9"><a class="header" href="#what-it-does-9">What it does</a></h2>
+<p>Checks for branches in if blocks that are equivalent.</p>
+<h2 id="why-this-is-bad-9"><a class="header" href="#why-this-is-bad-9">Why this is bad</a></h2>
+<p>This is most likely a copy and paste error.</p>
+<h2 id="example-9"><a class="header" href="#example-9">Example</a></h2>
+<pre><code class="language-lua">if foo then
+    print(1)
+else
+    print(1)
+end
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ifs_same_cond"><a class="header" href="#ifs_same_cond">ifs_same_cond</a></h1>
+<h2 id="what-it-does-10"><a class="header" href="#what-it-does-10">What it does</a></h2>
+<p>Checks for branches in if blocks with equivalent conditions.</p>
+<h2 id="why-this-is-bad-10"><a class="header" href="#why-this-is-bad-10">Why this is bad</a></h2>
+<p>This is most likely a copy and paste error.</p>
+<h2 id="example-10"><a class="header" href="#example-10">Example</a></h2>
+<pre><code class="language-lua">if foo then
+    print(1)
+elseif foo then
+    print(1)
+end
+</code></pre>
+<h2 id="remarks-3"><a class="header" href="#remarks-3">Remarks</a></h2>
+<p>This ignores conditions that could have side effects, such as function calls. This will not lint:</p>
+<pre><code class="language-lua">if foo() then
+    print(1)
+elseif foo() then
+    print(1)
+end
+</code></pre>
+<p>...as the result of <code>foo()</code> could be different the second time it is called.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="incorrect_standard_library_use"><a class="header" href="#incorrect_standard_library_use">incorrect_standard_library_use</a></h1>
+<h2 id="what-it-does-11"><a class="header" href="#what-it-does-11">What it does</a></h2>
+<p>Checks for correct use of <a href="lints/../usage/std.html">the standard library</a>.</p>
+<h2 id="example-11"><a class="header" href="#example-11">Example</a></h2>
+<pre><code class="language-lua">for _, shop in pairs(GoldShop, ItemShop, MedicineShop) do
+</code></pre>
+<h2 id="remarks-4"><a class="header" href="#remarks-4">Remarks</a></h2>
+<p><strong>It is highly recommended that you do not turn this lint off.</strong> If you are having standard library issues, modify your standard library instead to be correct. If it is a problem with an official standard library (Ex: the Lua 5.1 or Roblox ones), you can file an <a href="https://github.com/Kampfkarren/selene/issues">issue on GitHub</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="manual_table_clone"><a class="header" href="#manual_table_clone">manual_table_clone</a></h1>
+<h2 id="what-it-does-12"><a class="header" href="#what-it-does-12">What it does</a></h2>
+<p>Detects manual re-implementations of <code>table.clone</code> when it exists in the standard library.</p>
+<h2 id="why-this-is-bad-11"><a class="header" href="#why-this-is-bad-11">Why this is bad</a></h2>
+<p><code>table.clone</code> is much simpler to read and faster than manual re-implementations.</p>
+<h2 id="example-12"><a class="header" href="#example-12">Example</a></h2>
+<pre><code class="language-lua">local output = {}
+
+for key, value in pairs(input) do
+    output[key] = value
+end
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">local output = table.clone(input)
+</code></pre>
+<h2 id="remarks-5"><a class="header" href="#remarks-5">Remarks</a></h2>
+<p>Very little outside this exact pattern is matched. This is the list of circumstances which will stop the lint from triggering:</p>
+<ul>
+<li>Any logic in the body of the function aside from <code>output[key] = value</code>.</li>
+<li>Any usage of the output variable in between the definition and the loop (as determined by position in code).</li>
+<li>If the input variable is not a plain locally initialized variable. For example, <code>self.state[key] = value</code> will not lint.</li>
+<li>If the input variable is not defined as a completely empty table.</li>
+<li>If the loop and input variable are defined at different depths.</li>
+</ul>
+<hr />
+<p>The detected looping patterns are <code>pairs(t)</code>, <code>ipairs(t)</code>, <code>next, t</code>, and <code>t</code> (Luau generalized iteration). If <code>ipairs</code> is used, <code>table.clone</code> is not an exact match if the table is not exclusively an array. For example:</p>
+<pre><code class="language-lua">local mixedTable = { 1, 2, 3 }
+mixedTable.key = "value"
+
+local clone = {}
+
+-- Lints, but is not equivalent, since ipairs only loops over the array part.
+for key, value in ipairs(mixedTable) do
+    clone[key] = value
+end
+</code></pre>
+<p>When <code>ipairs</code> is the function being used, you'll be notified of this potential gotcha.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mismatched_arg_count"><a class="header" href="#mismatched_arg_count">mismatched_arg_count</a></h1>
+<h2 id="what-it-does-13"><a class="header" href="#what-it-does-13">What it does</a></h2>
+<p>Checks for too many arguments passed to function calls of defined functions.</p>
+<h2 id="why-this-is-bad-12"><a class="header" href="#why-this-is-bad-12">Why this is bad</a></h2>
+<p>These arguments provided are unnecessary, and can indicate that the function definition is not what was expected.</p>
+<h2 id="example-13"><a class="header" href="#example-13">Example</a></h2>
+<pre><code class="language-lua">local function foo(a, b)
+end
+
+foo(1, 2, 3) -- error, function takes 2 arguments, but 3 were supplied
+</code></pre>
+<h2 id="remarks-6"><a class="header" href="#remarks-6">Remarks</a></h2>
+<p>This lint does not handle too few arguments being passed, as this is commonly inferred as passing <code>nil</code>. For example,
+<code>foo(1)</code> could be used when meaning <code>foo(1, nil)</code>.</p>
+<p>If a defined function is reassigned anywhere in the program, it will try to match the best possible overlap. Take this example:</p>
+<pre><code class="language-lua">local function foo(a, b, c)
+    print("a")
+end
+
+function updateFoo()
+    foo = function(a, b, c, d)
+        print("b")
+    end
+end
+
+foo(1, 2, 3, 4) --&gt; "a" [mismatched args, but selene doesn't know]
+updateFoo()
+foo(1, 2, 3, 4) --&gt; "b" [no more mismatched args]
+</code></pre>
+<p>selene can not tell that <code>foo</code> corresponds to a new definition because <code>updateFoo()</code> was called in the current context, without actually <em>running</em> the program.</p>
+<p>However, this would still lint properly:</p>
+<pre><code class="language-lua">local log
+
+if SOME_DEBUG_FLAG then
+    log = function() end
+else
+    log = function(message)
+        print(message)
+    end
+end
+
+-- No definition of `log` takes more than 1 argument, so this will lint.
+log("LOG MESSAGE", "Something happened!")
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mixed_table"><a class="header" href="#mixed_table">mixed_table</a></h1>
+<h2 id="what-it-does-14"><a class="header" href="#what-it-does-14">What it does</a></h2>
+<p>Checks for mixed tables (tables that act as both an array and dictionary).</p>
+<h2 id="why-this-is-bad-13"><a class="header" href="#why-this-is-bad-13">Why this is bad</a></h2>
+<p>Mixed tables harms readability and are prone to bugs. There is almost always a better alternative.</p>
+<h2 id="example-14"><a class="header" href="#example-14">Example</a></h2>
+<pre><code class="language-lua">local foo = {
+    "array field",
+    bar = "dictionary field",
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="multiple_statements"><a class="header" href="#multiple_statements">multiple_statements</a></h1>
+<h2 id="what-it-does-15"><a class="header" href="#what-it-does-15">What it does</a></h2>
+<p>Checks for multiple statements on the same line.</p>
+<h2 id="why-this-is-bad-14"><a class="header" href="#why-this-is-bad-14">Why this is bad</a></h2>
+<p>This can make your code difficult to read.</p>
+<h2 id="configuration-6"><a class="header" href="#configuration-6">Configuration</a></h2>
+<p><code>one_line_if</code> (default: <code>"break-return-only"</code>) - Defines whether or not one line if statements should be allowed. One of three options:</p>
+<ul>
+<li>"break-return-only" (default) - <code>if x then return end</code> or <code>if x then break end</code> is ok, but <code>if x then call() end</code> is not.</li>
+<li>"allow" - All one line if statements are allowed.</li>
+<li>"deny" - No one line if statements are allowed.</li>
+</ul>
+<h2 id="example-15"><a class="header" href="#example-15">Example</a></h2>
+<pre><code class="language-lua">foo() bar() baz()
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">foo()
+bar()
+baz()
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="must_use-1"><a class="header" href="#must_use-1">must_use</a></h1>
+<h2 id="what-it-does-16"><a class="header" href="#what-it-does-16">What it does</a></h2>
+<p>Checks that the return values of functions <a href="lints/../usage/std.html#must_use">marked <code>must_use</code></a> are used.</p>
+<h2 id="why-this-is-bad-15"><a class="header" href="#why-this-is-bad-15">Why this is bad</a></h2>
+<p>This lint will only catch uses where the function has no reason to be called other than to use its output.</p>
+<h2 id="example-16"><a class="header" href="#example-16">Example</a></h2>
+<pre><code class="language-lua">bit32.bor(entity.flags, Flags.Invincible)
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">entity.flags = bit32.bor(entity.flags, Flags.Invincible)
+</code></pre>
+<p>...as <code>bit32.bor</code> only produces a new value, it does not mutate anything.</p>
+<h2 id="remarks-7"><a class="header" href="#remarks-7">Remarks</a></h2>
+<p>The output is deemed "unused" if the function call is its own statement.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="parenthese_conditions"><a class="header" href="#parenthese_conditions">parenthese_conditions</a></h1>
+<h2 id="what-it-does-17"><a class="header" href="#what-it-does-17">What it does</a></h2>
+<p>Checks for conditions in the form of <code>(expression)</code>.</p>
+<h2 id="why-this-is-bad-16"><a class="header" href="#why-this-is-bad-16">Why this is bad</a></h2>
+<p>Lua does not require these, and they are not idiomatic.</p>
+<h2 id="example-17"><a class="header" href="#example-17">Example</a></h2>
+<pre><code class="language-lua">if (x) then
+repeat until (x)
+while (x) do
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">if x then
+repeat until x
+while x do
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="roblox_incorrect_color3_new_bounds"><a class="header" href="#roblox_incorrect_color3_new_bounds">roblox_incorrect_color3_new_bounds</a></h1>
+<h2 id="what-it-does-18"><a class="header" href="#what-it-does-18">What it does</a></h2>
+<p>Checks for uses of <code>Color3.new</code> where the arguments are not between 0 and 1.</p>
+<h2 id="why-this-is-bad-17"><a class="header" href="#why-this-is-bad-17">Why this is bad</a></h2>
+<p>Most likely, you are trying to use values of 0 to 255. This will not give you an error, and will silently give you the wrong color. You probably meant to use <code>Color3.fromRGB</code> instead.</p>
+<h2 id="example-18"><a class="header" href="#example-18">Example</a></h2>
+<pre><code class="language-lua">Color3.new(255, 0, 0)
+</code></pre>
+<h2 id="remarks-8"><a class="header" href="#remarks-8">Remarks</a></h2>
+<p>This lint is only active if you are using the Roblox standard library.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="roblox_incorrect_roact_usage"><a class="header" href="#roblox_incorrect_roact_usage">roblox_incorrect_roact_usage</a></h1>
+<h2 id="what-it-does-19"><a class="header" href="#what-it-does-19">What it does</a></h2>
+<p>Checks for valid uses of createElement. Verifies that class name given is valid and that the properties passed for it are valid for that class.</p>
+<h2 id="why-this-is-bad-18"><a class="header" href="#why-this-is-bad-18">Why this is bad</a></h2>
+<p>This is guaranteed to fail once it is rendered. Furthermore, the createElement itself will not error--only once it's mounted will it error.</p>
+<h2 id="example-19"><a class="header" href="#example-19">Example</a></h2>
+<pre><code class="language-lua">-- Using Roact17
+React.createElement("Frame", {
+    key = "Valid property for React",
+})
+
+-- Using legacy Roact
+Roact.createElement("Frame", {
+    key = "Invalid property for Roact",
+    ThisPropertyDoesntExist = true,
+    Name = "This property should not be passed in",
+
+    [Roact.Event.ThisEventDoesntExist] = function() end,
+})
+
+Roact.createElement("BadClass", {})
+</code></pre>
+<h2 id="remarks-9"><a class="header" href="#remarks-9">Remarks</a></h2>
+<p>This lint is naive and makes several assumptions about the way you write your code. The assumptions are based on idiomatic Roact.</p>
+<ol>
+<li>It assumes you are either calling <code>createElement</code> directly or creating a local variable that's assigned to <code>[Roact/React].createElement</code>.</li>
+<li>It assumes if you are using a local variable, you're not reassigning it.</li>
+<li>It assumes either Roact or React is defined. <a href="lints/./undefined_variable.html"><code>undefined_variable</code></a> will still lint, however.</li>
+</ol>
+<p>This lint assumes legacy Roact if the variable name is <code>Roact</code> and Roact17 if the variable name is named <code>React</code>.</p>
+<p>This lint does not verify if the value you are giving is correct, so <code>Text = UDim2.new()</code> will be treated as correct. This lint, right now, only checks property and class names.</p>
+<p>This lint is only active if you are using the Roblox standard library.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="roblox_suspicious_udim2_new"><a class="header" href="#roblox_suspicious_udim2_new">roblox_suspicious_udim2_new</a></h1>
+<h2 id="what-it-does-20"><a class="header" href="#what-it-does-20">What it does</a></h2>
+<p>Checks for too little arguments passed to <code>UDim2.new()</code>.</p>
+<h2 id="why-this-is-bad-19"><a class="header" href="#why-this-is-bad-19">Why this is bad</a></h2>
+<p>Passing in an incorrect number of arguments can indicate that the user meant to use <code>UDim2.fromScale</code> or <code>UDim2.fromOffset</code>.
+Even if the user really only needed to pass in a fewer number of arguments to <code>UDim2.new</code>, this lowers readability
+as it calls into question whether it's a bug or if the user truly meant to use <code>UDim2.new</code>.</p>
+<h2 id="example-20"><a class="header" href="#example-20">Example</a></h2>
+<pre><code class="language-lua">UDim2.new(1, 1) -- error, UDim2.new takes 4 numbers, but 2 were provided.
+</code></pre>
+<h2 id="remarks-10"><a class="header" href="#remarks-10">Remarks</a></h2>
+<p>This lint is only active if you are using the Roblox standard library.</p>
+<p>This lint does not warn if passing in exactly 2 arguments and none of those are number literals to prevent false positives
+with <code>UDim2.new(UDim.new(a, b), UDim.new(c, d))</code></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="shadowing"><a class="header" href="#shadowing">shadowing</a></h1>
+<h2 id="what-it-does-21"><a class="header" href="#what-it-does-21">What it does</a></h2>
+<p>Checks for overriding of variables under the same name.</p>
+<h2 id="why-this-is-bad-20"><a class="header" href="#why-this-is-bad-20">Why this is bad</a></h2>
+<p>This can cause confusion when reading the code when trying to understand which variable is being used, and if you want to use the original variable you either have to redefine it under a temporary name or refactor the code that shadowed it.</p>
+<h2 id="configuration-7"><a class="header" href="#configuration-7">Configuration</a></h2>
+<p><code>ignore_pattern</code> (default: <code>"^_"</code>) - A <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> that is used to specify names that are allowed to be shadowed. The default allows for variables like <code>_</code> to be shadowed, as they shouldn't be used anyway.</p>
+<h2 id="example-21"><a class="header" href="#example-21">Example</a></h2>
+<pre><code class="language-lua">local x = 1
+
+if foo then
+    local x = 1
+end
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="suspicious_reverse_loop"><a class="header" href="#suspicious_reverse_loop">suspicious_reverse_loop</a></h1>
+<h2 id="what-it-does-22"><a class="header" href="#what-it-does-22">What it does</a></h2>
+<p>Checks for <code>for _ = #x, 1 do</code> sequences without specifying a negative step.</p>
+<h2 id="why-this-is-bad-21"><a class="header" href="#why-this-is-bad-21">Why this is bad</a></h2>
+<p>This loop will only run at most once, instead of going in reverse. If you truly did mean to run your loop only once, just use <code>if #x &gt; 0</code> instead.</p>
+<h2 id="example-22"><a class="header" href="#example-22">Example</a></h2>
+<pre><code class="language-lua">for _ = #x, 1 do
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">for _ = #x, 1, -1 do
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="type_check_inside_call"><a class="header" href="#type_check_inside_call">type_check_inside_call</a></h1>
+<h2 id="what-it-does-23"><a class="header" href="#what-it-does-23">What it does</a></h2>
+<p>Checks for <code>type(foo == "type")</code>, instead of <code>type(foo) == "type"</code>.</p>
+<h2 id="why-this-is-bad-22"><a class="header" href="#why-this-is-bad-22">Why this is bad</a></h2>
+<p>This will always return <code>"boolean"</code>, and is undoubtedly not what you intended to write.</p>
+<h2 id="example-23"><a class="header" href="#example-23">Example</a></h2>
+<pre><code class="language-lua">return type(foo == "number")
+</code></pre>
+<p>...should be written as...</p>
+<pre><code class="language-lua">return type(foo) == "number"
+</code></pre>
+<h2 id="remarks-11"><a class="header" href="#remarks-11">Remarks</a></h2>
+<p>When using the Roblox standard library, this checks <code>typeof</code> as well.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unbalanced_assignments"><a class="header" href="#unbalanced_assignments">unbalanced_assignments</a></h1>
+<h2 id="what-it-does-24"><a class="header" href="#what-it-does-24">What it does</a></h2>
+<p>Checks for unbalanced assignments, such as <code>a, b, c = 1</code>.</p>
+<h2 id="why-this-is-bad-23"><a class="header" href="#why-this-is-bad-23">Why this is bad</a></h2>
+<p>You shouldn't declare variables you're not immediately initializing on the same line as ones you are. This is most likely just forgetting to specify the rest of the variables.</p>
+<h2 id="example-24"><a class="header" href="#example-24">Example</a></h2>
+<pre><code class="language-lua">a, b, c = 1
+a = 1, 2
+</code></pre>
+<h2 id="remarks-12"><a class="header" href="#remarks-12">Remarks</a></h2>
+<p>There are a few things this lint won't catch.</p>
+<p><code>a, b, c = call()</code> will not lint, as <code>call()</code> could return multiple values.</p>
+<p><code>a, b, c = call(), 2</code> will, however, as you will only be using the first value of <code>call()</code>. You will even receive a helpful message about this.</p>
+<pre><code>error[unbalanced_assignments]: values on right side don't match up to the left side of the assignment
+
+   ┌── unbalanced_assignments.lua:6:11 ───
+   │
+ 6 │ a, b, c = call(), 2
+   │           ^^^^^^^^^
+   │
+
+   ┌── unbalanced_assignments.lua:6:11 ───
+   │
+ 6 │ a, b, c = call(), 2
+   │           ------ help: if this function returns more than one value, the only first return value is actually used
+   │
+</code></pre>
+<p>If nil is specified as the last value, the rest will be ignored. This means...</p>
+<pre><code class="language-lua">a, b, c = nil
+</code></pre>
+<p>...will not lint.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="undefined_variable"><a class="header" href="#undefined_variable">undefined_variable</a></h1>
+<h2 id="what-it-does-25"><a class="header" href="#what-it-does-25">What it does</a></h2>
+<p>Checks for uses of variables that are not defined.</p>
+<h2 id="why-this-is-bad-24"><a class="header" href="#why-this-is-bad-24">Why this is bad</a></h2>
+<p>This is most likely a typo.</p>
+<h2 id="example-25"><a class="header" href="#example-25">Example</a></h2>
+<pre><code class="language-lua">-- vv oops!
+prinnt("hello, world!")
+</code></pre>
+<h2 id="remarks-13"><a class="header" href="#remarks-13">Remarks</a></h2>
+<p>If you are using a different standard library where a global variable is defined that selene isn't picking up on, create a <a href="lints/../usage/std.html">standard library</a> that specifies it.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unscoped_variables"><a class="header" href="#unscoped_variables">unscoped_variables</a></h1>
+<h2 id="what-it-does-26"><a class="header" href="#what-it-does-26">What it does</a></h2>
+<p>Checks for variables that are unscoped (don't have a local variable attached).</p>
+<h2 id="why-this-is-bad-25"><a class="header" href="#why-this-is-bad-25">Why this is bad</a></h2>
+<p>Unscoped variables make code harder to read and debug, as well as making it harder for selene to analyze.</p>
+<h2 id="configuration-8"><a class="header" href="#configuration-8">Configuration</a></h2>
+<p><code>ignore_pattern</code> (default: <code>"^_"</code>) - A <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> for variables that are allowed to be unscoped. The default allows for variables like <code>_</code> to be unscoped, as they shouldn't be used anyway.</p>
+<h2 id="example-26"><a class="header" href="#example-26">Example</a></h2>
+<pre><code class="language-lua">baz = 3
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unused_variable"><a class="header" href="#unused_variable">unused_variable</a></h1>
+<h2 id="what-it-does-27"><a class="header" href="#what-it-does-27">What it does</a></h2>
+<p>Checks for variables that are unused.</p>
+<h2 id="why-this-is-bad-26"><a class="header" href="#why-this-is-bad-26">Why this is bad</a></h2>
+<p>The existence of unused variables could indicate buggy code.</p>
+<h2 id="configuration-9"><a class="header" href="#configuration-9">Configuration</a></h2>
+<p><code>allow_unused_self</code> (default: <code>true</code>) - A bool that determines whether not using <code>self</code> in a method function (<code>function Player:SwapWeapons()</code>) is allowed.</p>
+<p><code>ignore_pattern</code> (default: <code>"^_"</code>) - A <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> for variables that are allowed to be unused. The default allows for variables like <code>_</code> to be unused, as they shouldn't be used anyway.</p>
+<h2 id="example-27"><a class="header" href="#example-27">Example</a></h2>
+<pre><code class="language-lua">local foo = 1
+</code></pre>
+<h2 id="remarks-14"><a class="header" href="#remarks-14">Remarks</a></h2>
+<h3 id="_-prefixing"><a class="header" href="#_-prefixing"><code>_</code> prefixing</a></h3>
+<p>If you intend to create a variable without using it, replace it with <code>_</code> or something that starts with <code>_</code>. You'll see this most in generic for loops.</p>
+<pre><code class="language-lua">for _, value in ipairs(list) do
+</code></pre>
+<h3 id="observes-1"><a class="header" href="#observes-1"><code>observes</code></a></h3>
+<p>Standard libraries can apply <a href="lints/../usage/std.html#observes">an <code>observes</code> field</a> to distinguish an argument from being only written to.</p>
+<p>This is so that we can get lints like the following:</p>
+<pre><code class="language-lua">local writtenOnly = {}
+table.insert(writtenOnly, 1)
+</code></pre>
+<pre><code>warning[unused_variable]: writtenOnly is assigned a value, but never used
+  ┌─ example.lua:1:7
+  │
+1 │ local writtenOnly = {}
+  │       ^^^^^^^^^^^
+2 │ table.insert(writtenOnly, 1)
+  │              ----------- `table.insert` only writes to `writtenOnly`
+</code></pre>
+<p>This only applies when the function call is its own statement. So for instance, this:</p>
+<pre><code class="language-lua">local list = {}
+print(table.insert(list, 1))
+</code></pre>
+<p>...will <em>not</em> lint. To understand this, consider if <code>table.insert</code> returned the index. Without this check, this code:</p>
+<pre><code class="language-lua">local list = {}
+local index = table.insert(list, 1)
+</code></pre>
+<p>...would lint <code>list</code> as mutated only, which while technically true, is unimportant considering <code>index</code> is affected by the mutation.</p>
+<p>This also requires that the variable be a static table. This:</p>
+<pre><code class="language-lua">return function(value)
+    table.insert(value, 1)
+end
+</code></pre>
+<p>...will not lint, as we cannot be sure <code>value</code> is unused outside of this.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="archive"><a class="header" href="#archive">Archive</a></h1>
+<p>The following is pages that refer to deprecated or removed features in selene.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="standard-library-format-v1"><a class="header" href="#standard-library-format-v1">Standard Library Format (v1)</a></h1>
+<blockquote>
+<p>The TOML standard library format is <strong>DEPRECATED</strong> and will not have any new functionality added onto it. Check out the <a href="archive/../usage/std.html">updated standard library format here</a>.</p>
+<p>In order to convert an existing TOML standard library over to the new format, simply run <code>selene upgrade-std library.toml</code>, which will create an upgraded <code>library.yml</code> file.</p>
+</blockquote>
+<p>selene provides a robust standard library format to allow for use with environments other than vanilla Lua. Standard libraries are defined in the form of <a href="https://github.com/toml-lang/toml">TOML</a> files.</p>
+<h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
+<p>For examples of the standard library format, see:</p>
+<ul>
+<li><a href="https://github.com/Kampfkarren/selene/blob/416be350d7004bf300a83f402712f8df6a3f67da/selene-lib/default_std/lua51.toml"><code>lua51.toml</code></a> - The default standard library for Lua 5.1</li>
+<li><a href="https://github.com/Kampfkarren/selene/blob/416be350d7004bf300a83f402712f8df6a3f67da/selene-lib/default_std/lua52.toml"><code>lua52.toml</code></a> - A standard library for Lua 5.2's additions and removals. Reference this if your standard library is based off another (it most likely is).</li>
+<li><a href="https://gist.github.com/evaera/13c96302d308c7a9ffb2a3fc5d28ac96"><code>roblox.toml</code></a> - A standard library for Roblox that incorporates all the advanced features of the format. If you are a Roblox developer, don't use this as anything other than reference--an up to date version of this library is available with every commit.</li>
+</ul>
+<h2 id="selene-1"><a class="header" href="#selene-1">[selene]</a></h2>
+<p>Anything under the key <code>[selene]</code> is used for meta information. The following paths are accepted:</p>
+<p><code>[selene.base]</code> - Used for specifying what standard library to be based off of. Currently only accepts built in standard libraries, meaning <code>lua51</code> or <code>lua52</code>.</p>
+<p><code>[selene.name]</code> - Used for specifying the name of the standard library. Used internally for cases such as only giving Roblox lints if the standard library is named <code>"roblox"</code>.</p>
+<p><code>[selene.structs]</code> - Used for declaring <a href="archive/std_v1.html#structs">structs</a>.</p>
+<h2 id="globals-1"><a class="header" href="#globals-1">[globals]</a></h2>
+<p>This is where the magic happens. The <code>globals</code> field is a dictionary where the keys are the globals you want to define. The value you give tells selene what the value can be, do, and provide.</p>
+<p>If your standard library is based off another, overriding something defined there will use your implementation over the original.</p>
+<h2 id="any-1"><a class="header" href="#any-1">Any</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[foo]
+any = true
+</code></pre>
+<p>Specifies that the field can be used in any possible way, meaning that <code>foo.x</code>, <code>foo:y()</code>, etc will all validate.</p>
+<h2 id="functions-1"><a class="header" href="#functions-1">Functions</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[[tonumber.args]]
+type = "any"
+
+[[tonumber.args]]
+type = "number"
+required = false
+</code></pre>
+<p>A field is a function if it contains an <code>args</code> and/or <code>method</code> field.</p>
+<p>If <code>method</code> is specified as <code>true</code> and the function is inside a table, then it will require the function be called in the form of <code>Table:FunctionName()</code>, instead of <code>Table.FunctionName()</code>.</p>
+<p><code>args</code> is an array of arguments, in order of how they're used in the function. An argument is in the form of:</p>
+<pre><code>required?: false | true | string;
+type: "any" | "bool" | "function" | "nil"
+    | "number" | "string" | "table" | "..."
+    | string[] | { "display": string }
+</code></pre>
+<h2 id="required-1"><a class="header" href="#required-1">"required"</a></h2>
+<ul>
+<li><code>true</code> - The default, this argument is required.</li>
+<li><code>false</code> - This argument is optional.</li>
+<li>A string - This argument is required, and not using it will give this as the reason why.</li>
+</ul>
+<h2 id="argument-types-1"><a class="header" href="#argument-types-1">Argument types</a></h2>
+<ul>
+<li><code>"any"</code> - Allows any value.</li>
+<li><code>"bool"</code>, <code>"function"</code>, <code>"nil"</code>, <code>"number"</code>, <code>"string"</code>, <code>"table"</code> - Expects a value of the respective type.</li>
+<li><code>"..."</code> - Allows any number of variables after this one. If <code>required</code> is true (it is by default), then this will lint if no additional arguments are given. It is incorrect to have this in the middle.</li>
+<li>Constant list of strings - Will check if the value provided is one of the strings in the list. For example, <code>collectgarbage</code> only takes one of a few exact string arguments--doing <code>collectgarbage("count")</code> will work, but <code>collectgarbage("whoops")</code> won't.</li>
+<li><code>{ "display": string }</code> - Used when no constant could possibly be correct. If a constant is used, selene will tell the user that an argument of the type (display) is required. For an example, the Roblox method <code>Color3.toHSV</code> expects a <code>Color3</code> object--no constant inside it could be correct, so this is defined as:</li>
+</ul>
+<pre><code class="language-toml">[[Color3.toHSV.args]]
+type = { display = "Color3" }
+</code></pre>
+<h2 id="properties-1"><a class="header" href="#properties-1">Properties</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[_VERSION]
+property = true
+</code></pre>
+<p>Specifies that a property exists. For example, <code>_VERSION</code> is available as a global and doesn't have any fields of its own, so it is just defined as a property.</p>
+<p>The same goes for <code>_G</code>, which is defined as:</p>
+<pre><code class="language-toml">[_G]
+property = true
+writable = "new-fields"
+</code></pre>
+<p><code>writable</code> is an optional field that tells selene how the property can be mutated and used:</p>
+<ul>
+<li><code>"new-fields"</code> - New fields can be added and set, but variable itself cannot be redefined. In the case of _G, it means that <code>_G = "foo"</code> is linted against.</li>
+<li><code>"overridden"</code> - New fields can't be added, but entire variable can be overridden. In the case of Roblox's <code>Instance.Name</code>, it means we can do <code>Instance.Name = "Hello"</code>, but not <code>Instance.Name.Call()</code>.</li>
+<li><code>"full"</code> - New fields can be added and entire variable can be overridden.</li>
+</ul>
+<p>If <code>writable</code> is not specified, selene will assume it can neither have new fields associated with it nor can be overridden.</p>
+<h2 id="struct-1"><a class="header" href="#struct-1">Struct</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[game]
+struct = "DataModel"
+</code></pre>
+<p>Specifies that the field is an instance of a <a href="archive/std_v1.html#structs">struct</a>. The value is the name of the struct.</p>
+<h2 id="table"><a class="header" href="#table">Table</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[math.huge]
+property = true
+
+[math.pi]
+property = true
+</code></pre>
+<p>A field is understood as a table if it has fields of its own. Notice that <code>[math]</code> is not defined anywhere, but its fields are. Fields are of the same type as globals.</p>
+<h2 id="removed-1"><a class="header" href="#removed-1">Removed</a></h2>
+<p>Example:</p>
+<pre><code class="language-toml">[getfenv]
+removed = true
+</code></pre>
+<p>Used when your standard library is based off another, and your library removes something from the original.</p>
+<h2 id="structs-1"><a class="header" href="#structs-1">Structs</a></h2>
+<p>Structs are used in places such as Roblox Instances. Every Instance in Roblox, for example, declares a <code>:GetChildren()</code> method. We don't want to have to define this everywhere an Instance is declared globally, so instead we just define it once in a struct.</p>
+<p>Structs are defined as fields of <code>[selene.structs]</code>. Any fields they have will be used for instances of that struct. For example, the Roblox standard library has the struct:</p>
+<pre><code class="language-toml">[selene.structs.Event.Connect]
+method = true
+
+[[selene.structs.Event.Connect.args]]
+type = "function"
+</code></pre>
+<p>From there, it can define:</p>
+<pre><code class="language-toml">[workspace.Changed]
+struct = "Event"
+</code></pre>
+<p>...and selene will know that <code>workspace.Changed:Connect(callback)</code> is valid, but <code>workspace.Changed:RandomNameHere()</code> is not.</p>
+<h2 id="wildcards-1"><a class="header" href="#wildcards-1">Wildcards</a></h2>
+<p>Fields can specify requirements if a field is referenced that is not explicitly named. For example, in Roblox, instances can have arbitrary fields of other instances (<code>workspace.Baseplate</code> indexes an instance named Baseplate inside <code>workspace</code>, but <code>Baseplate</code> is nowhere in the Roblox API).</p>
+<p>We can specify this behavior by using the special <code>"*"</code> field.</p>
+<pre><code class="language-toml">[workspace."*"]
+struct = "Instance"
+</code></pre>
+<p>This will tell selene "any field accessed from <code>workspace</code> that doesn't exist must be an Instance <a href="archive/std_v1.html#structs">struct</a>".</p>
+<p>Wildcards can even be used in succession. For example, consider the following:</p>
+<pre><code class="language-toml">[script.Name]
+property = true
+writable = "overridden"
+
+[script."*"."*"]
+property = true
+writable = "full"
+</code></pre>
+<p>Ignoring the wildcard, so far this means:</p>
+<ul>
+<li><code>script.Name = "Hello"</code> <em>will</em> work.</li>
+<li><code>script = nil</code> <em>will not</em> work, because the writability of <code>script</code> is not specified.</li>
+<li><code>script.Name.UhOh</code> <em>will not</em> work, because <code>script.Name</code> does not have fields.</li>
+</ul>
+<p>However, with the wildcard, this adds extra meaning:</p>
+<ul>
+<li><code>script.Foo = 3</code> <em>will not</em> work, because the writability of <code>script.*</code> is not specified.</li>
+<li><code>script.Foo.Bar = 3</code> <em>will</em> work, because <code>script.*.*</code> has full writability.</li>
+<li><code>script.Foo.Bar.Baz = 3</code> <em>will</em> work for the same reason as above.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
