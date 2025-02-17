@@ -33,9 +33,9 @@ pub mod suspicious_reverse_loop;
 pub mod type_check_inside_call;
 pub mod unbalanced_assignments;
 pub mod undefined_variable;
+pub mod unknown_function_attribute;
 pub mod unscoped_variables;
 pub mod unused_variable;
-pub mod unknown_function_attribute;
 
 #[cfg(feature = "roblox")]
 pub mod roblox_incorrect_color3_new_bounds;

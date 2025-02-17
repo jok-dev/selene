@@ -5,14 +5,9 @@ use std::convert::Infallible;
 use crate::ast_util::range;
 
 #[cfg(feature = "roblox")]
-use full_moon::{
-    ast::self,
-};
+use full_moon::ast;
 
-use full_moon::{
-    ast::Ast,
-    visitors::Visitor,
-};
+use full_moon::{ast::Ast, visitors::Visitor};
 
 #[derive(Default)]
 pub struct UnknownFunctionAttributeLint;
@@ -39,13 +34,17 @@ impl Lint for UnknownFunctionAttributeLint {
 
         visitor.visit_ast(ast);
 
-        visitor.positions.into_iter().map(|(start, end, attr_name)| {
-            Diagnostic::new(
-                "unknown_function_attribute",
-                format!("unknown function attribute '{}'", attr_name),
-                Label::new((start, end)),
-            )
-        }).collect()
+        visitor
+            .positions
+            .into_iter()
+            .map(|(start, end, attr_name)| {
+                Diagnostic::new(
+                    "unknown_function_attribute",
+                    format!("unknown function attribute '{}'", attr_name),
+                    Label::new((start, end)),
+                )
+            })
+            .collect()
     }
 }
 
@@ -59,7 +58,8 @@ impl Visitor for UnknownFunctionAttributeVisitor {
         for attribute in function_declaration.attributes() {
             let attr_name = attribute.name().to_string().trim().to_owned();
             if attr_name != "native" {
-                self.positions.push((range(attribute).0, range(attribute).1, attr_name));
+                self.positions
+                    .push((range(attribute).0, range(attribute).1, attr_name));
             }
         }
     }

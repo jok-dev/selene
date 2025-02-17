@@ -280,10 +280,10 @@ fn count_block_complexity(block: &ast::Block, starting_complexity: u16) -> u16 {
 
             // visit_function_declaration already tracks this
             ast::Stmt::FunctionDeclaration(_) => {}
-            
+
             #[cfg(feature = "roblox")]
             ast::Stmt::TypeFunction(_) => {}
-            
+
             #[cfg(feature = "roblox")]
             ast::Stmt::ExportedTypeFunction(_) => {}
 
