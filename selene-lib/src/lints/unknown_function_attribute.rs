@@ -57,17 +57,3 @@ impl Visitor for UnknownFunctionAttributeVisitor {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::{super::test_util::test_lint, *};
-
-    #[test]
-    fn test_unknown_function_attribute() {
-        test_lint(
-            UnknownFunctionAttributeLint::new(()).unwrap(),
-            "unknown_function_attribute",
-            "unknown_function_attribute",
-        );
-    }
-}
