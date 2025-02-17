@@ -3,6 +3,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/Kampfkarren/selene/compare/0.28.0...HEAD)
 
+## [0.29.0](https://github.com/Kampfkarren/selene/releases/0.29.0) - 2025-02-17
+### Added
+- Added support for `@native` before function definitions
+- Added new lint `unknown_function_attribute`, which adds errors for function attributes other than `@native`
+
 ## [0.28.0](https://github.com/Kampfkarren/selene/releases/0.28.0) - 2025-01-09
 ### Added
 - Added `Path2DControlPoint.new`, `Content.fromUri`, `Content.fromAssetId`, and `Content.fromObject` to the Roblox standard library
