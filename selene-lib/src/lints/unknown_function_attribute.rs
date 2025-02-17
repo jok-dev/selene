@@ -21,7 +21,11 @@ impl Lint for UnknownFunctionAttributeLint {
         Ok(UnknownFunctionAttributeLint)
     }
 
-    fn pass(&self, ast: &Ast, _: &Context, _: &AstContext) -> Vec<Diagnostic> {
+    fn pass(&self, ast: &Ast, context: &Context, _: &AstContext) -> Vec<Diagnostic> {
+        if !context.is_roblox() {
+            return Vec::new();
+        }
+
         let mut visitor = UnknownFunctionAttributeVisitor {
             positions: Vec::new(),
         };
@@ -43,6 +47,7 @@ struct UnknownFunctionAttributeVisitor {
 }
 
 impl Visitor for UnknownFunctionAttributeVisitor {
+    #[cfg(feature = "roblox")]
     fn visit_function_declaration(&mut self, function_declaration: &ast::FunctionDeclaration) {
         for attribute in function_declaration.attributes() {
             let attr_name = attribute.name().to_string().trim().to_owned();
