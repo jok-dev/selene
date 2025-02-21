@@ -586,14 +586,20 @@ impl Visitor for StandardLibraryVisitor<'_> {
                 })
                 .collect();
 
+            let base_message = format!(
+                "standard library function `{}` {} parameters, {} passed",
+                name_path.join("."),
+                if expected_args == max_args {
+                    format!("requires {}", expected_args)
+                } else {
+                    format!("accepts between {} and {}", expected_args, max_args)
+                },
+                arguments_length,
+            );
+
             self.diagnostics.push(Diagnostic::new_complete(
                 "incorrect_standard_library_use",
-                format!(
-                    "standard library function `{}` requires {} parameters, {} passed",
-                    name_path.join("."),
-                    expected_args,
-                    argument_types.len(),
-                ),
+                base_message,
                 Label::from_node(call, None),
                 required_param_message,
                 Vec::new(),
