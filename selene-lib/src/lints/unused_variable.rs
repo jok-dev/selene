@@ -25,7 +25,7 @@ impl Default for UnusedVariableConfig {
     }
 }
 
-pub struct UnusedVariableLint {
+pub struct UnusedVariableLint<const ONLY_CHECK_PARAMETERS: bool> {
     allow_unused_self: bool,
     ignore_pattern: Regex,
 }
@@ -37,7 +37,7 @@ pub enum AnalyzedReference {
     ObservedWrite(Label),
 }
 
-impl Lint for UnusedVariableLint {
+impl<const ONLY_CHECK_PARAMETERS: bool> Lint for UnusedVariableLint<ONLY_CHECK_PARAMETERS> {
     type Config = UnusedVariableConfig;
     type Error = regex::Error;
 
@@ -60,6 +60,10 @@ impl Lint for UnusedVariableLint {
             .iter()
             .filter(|(_, variable)| !self.ignore_pattern.is_match(&variable.name))
         {
+            if ONLY_CHECK_PARAMETERS != variable.is_parameter {
+                continue;
+            }
+
             if context.standard_library.global_has_fields(&variable.name) {
                 continue;
             }
@@ -170,7 +174,11 @@ impl Lint for UnusedVariableLint {
                 let write_only = !analyzed_references.is_empty();
 
                 diagnostics.push(Diagnostic::new_complete(
-                    "unused_variable",
+                    if variable.is_parameter {
+                        "unused_function_parameter"
+                    } else {
+                        "unused_variable"
+                    },
                     if write_only {
                         format!("{} is assigned a value, but never used", variable.name)
                     } else {
@@ -203,7 +211,7 @@ mod tests {
     #[test]
     fn test_blocks() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "blocks",
         );
@@ -212,7 +220,7 @@ mod tests {
     #[test]
     fn test_locals() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "locals",
         );
@@ -221,7 +229,7 @@ mod tests {
     #[test]
     fn test_edge_cases() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "edge_cases",
         );
@@ -230,7 +238,7 @@ mod tests {
     #[test]
     fn test_explicit_self() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "explicit_self",
         );
@@ -239,7 +247,7 @@ mod tests {
     #[test]
     fn test_function_overriding() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "function_overriding",
         );
@@ -248,7 +256,7 @@ mod tests {
     #[test]
     fn test_generic_for_shadowing() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "generic_for_shadowing",
         );
@@ -257,7 +265,7 @@ mod tests {
     #[test]
     fn test_if() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "if",
         );
@@ -266,7 +274,7 @@ mod tests {
     #[test]
     fn test_ignore() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "ignore",
         );
@@ -274,7 +282,7 @@ mod tests {
 
     #[test]
     fn test_invalid_regex() {
-        assert!(UnusedVariableLint::new(UnusedVariableConfig {
+        assert!(UnusedVariableLint::<false>::new(UnusedVariableConfig {
             ignore_pattern: "(".to_owned(),
             ..UnusedVariableConfig::default()
         })
@@ -284,7 +292,7 @@ mod tests {
     #[test]
     fn test_mutating_functions() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "mutating_functions",
         );
@@ -293,7 +301,7 @@ mod tests {
     #[test]
     fn test_observes() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "observes",
         );
@@ -302,7 +310,7 @@ mod tests {
     #[test]
     fn test_overriding() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "overriding",
         );
@@ -311,7 +319,7 @@ mod tests {
     #[test]
     fn test_self() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig {
+            UnusedVariableLint::<false>::new(UnusedVariableConfig {
                 allow_unused_self: false,
                 ..UnusedVariableConfig::default()
             })
@@ -324,7 +332,7 @@ mod tests {
     #[test]
     fn test_self_ignored() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "self_ignored",
         );
@@ -333,7 +341,7 @@ mod tests {
     #[test]
     fn test_shadowing() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "shadowing",
         );
@@ -342,7 +350,7 @@ mod tests {
     #[test]
     fn test_varargs() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "varargs",
         );
@@ -352,7 +360,7 @@ mod tests {
     #[test]
     fn test_types() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "types",
         );
@@ -361,7 +369,7 @@ mod tests {
     #[test]
     fn test_write_only() {
         test_lint(
-            UnusedVariableLint::new(UnusedVariableConfig::default()).unwrap(),
+            UnusedVariableLint::<false>::new(UnusedVariableConfig::default()).unwrap(),
             "unused_variable",
             "write_only",
         );

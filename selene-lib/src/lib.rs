@@ -322,7 +322,8 @@ use_lints! {
     unbalanced_assignments: lints::unbalanced_assignments::UnbalancedAssignmentsLint,
     undefined_variable: lints::undefined_variable::UndefinedVariableLint,
     unscoped_variables: lints::unscoped_variables::UnscopedVariablesLint,
-    unused_variable: lints::unused_variable::UnusedVariableLint,
+    unused_variable: lints::unused_variable::UnusedVariableLint<false>,
+    unused_function_parameter: lints::unused_variable::UnusedVariableLint<true>,
 
     #[cfg(feature = "roblox")]
     {

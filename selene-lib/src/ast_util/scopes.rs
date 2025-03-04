@@ -141,6 +141,7 @@ pub struct Variable {
     pub references: Vec<Id<Reference>>,
     pub shadowed: Option<Id<Variable>>,
     pub is_self: bool,
+    pub is_parameter: bool,
     pub value: Option<AssignedValue>,
 }
 
@@ -912,7 +913,15 @@ impl Visitor for ScopeVisitor {
 
         for parameter in body.parameters() {
             if let ast::Parameter::Ellipsis(token) | ast::Parameter::Name(token) = parameter {
-                self.define_name(token, range(token));
+                self.define_name_full_with_variable(
+                    &token.token().to_string(),
+                    range(token),
+                    range(token),
+                    Variable {
+                        is_parameter: true,
+                        ..Variable::default()
+                    },
+                );
             }
         }
     }
