@@ -154,6 +154,13 @@ globals:
       - required: false
         type: number
     must_use: true
+  CFrame.fromRotationBetweenVectors:
+    args:
+      - type:
+          display: Vector3
+      - type:
+          display: Vector3
+    must_use: true
   Color3.fromHSV:
     args:
       - type: number
@@ -695,6 +702,7 @@ globals:
         type: number
   script.Name:
     property: new-fields
+  
 structs:
   EnumItem:
     Name:
