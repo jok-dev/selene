@@ -24,15 +24,15 @@ pub enum StandardLibraryError {
         name: String,
     },
 
-    Roblox(color_eyre::eyre::Report),
+    Roblox(Box<color_eyre::eyre::Report>),
 
     Toml {
-        source: toml::de::Error,
+        source: Box<toml::de::Error>,
         path: PathBuf,
     },
 
     Yml {
-        source: serde_yaml::Error,
+        source: Box<serde_yaml::Error>,
         path: PathBuf,
     },
 }
@@ -100,7 +100,7 @@ pub fn collect_standard_library<V>(
             None => {
                 if cfg!(feature = "roblox") && segment == "roblox" {
                     collect_roblox_standard_library(config, directory)
-                        .map_err(StandardLibraryError::Roblox)?
+                        .map_err(|err| StandardLibraryError::Roblox(Box::new(err)))?
                 } else {
                     return Err(StandardLibraryError::NotFound {
                         name: segment.to_owned(),
@@ -163,7 +163,7 @@ fn from_name<V>(
 
             let v1_library: v1::StandardLibrary =
                 toml::from_str(&content).map_err(|error| StandardLibraryError::Toml {
-                    source: error,
+                    source: Box::new(error),
                     path: toml_file.clone(),
                 })?;
 
@@ -184,7 +184,7 @@ fn from_name<V>(
 
                 library = Some(serde_yaml::from_str(&content).map_err(|error| {
                     StandardLibraryError::Yml {
-                        source: error,
+                        source: Box::new(error),
                         path: yaml_file.clone(),
                     }
                 })?);

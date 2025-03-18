@@ -225,7 +225,7 @@ macro_rules! use_lints {
                         user_set_standard_library: config.std.as_ref().map(|std_text| {
                             std_text.split('+').map(ToOwned::to_owned).collect()
                         }),
-                        root_path: root_path,
+                        root_path,
                         current_file: None,
                     },
 

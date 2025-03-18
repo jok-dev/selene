@@ -125,7 +125,7 @@ impl Visitor for UnknownRequiredModuleVisitor {
                         let mut args_iter = arguments.iter();
                         if let Some(arg) = args_iter.next() {
                             let mut potential_logs: Vec<String> = Vec::new();
-                            potential_logs.push(format!("--------------------------------"));
+                            potential_logs.push("--------------------------------".to_string());
 
                             let mut arg_string = arg.to_string();
 
@@ -138,7 +138,7 @@ impl Visitor for UnknownRequiredModuleVisitor {
                             }
 
                             let first_part = arg_string
-                                .split(|c: char| c == '.' || c == ':')
+                                .split(['.', ':'])
                                 .next()
                                 .unwrap();
                             potential_logs.push(format!("First part: {}", first_part));
@@ -149,7 +149,7 @@ impl Visitor for UnknownRequiredModuleVisitor {
                                     arg_string =
                                         format!("{}{}", root_path.to_string_lossy(), arg_string);
                                 } else {
-                                    potential_logs.push(format!("No root path found :("));
+                                    potential_logs.push("No root path found :(".to_string());
                                 }
                             } else {
                                 let variable_value = self.local_vars.get(first_part);
@@ -234,14 +234,14 @@ impl Visitor for UnknownRequiredModuleVisitor {
 
                             if !found_file {
                                 potential_logs
-                                    .push(format!("Failed to find file for: {}", arg.to_string()));
+                                    .push(format!("Failed to find file for: {}", arg));
                                 potential_logs.push(format!("Converted path: {}", arg_string));
                                 potential_logs.push(format!(
                                     "Current file: {}",
                                     self.current_file.as_ref().unwrap().to_string_lossy()
                                 ));
                             }
-                            potential_logs.push(format!("--------------------------------"));
+                            potential_logs.push("--------------------------------".to_string());
 
                             // output error message
                             if !found_file {
