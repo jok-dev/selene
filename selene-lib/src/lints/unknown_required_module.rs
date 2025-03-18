@@ -2,7 +2,6 @@ use super::*;
 use std::convert::Infallible;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use crate::ast_util::scopes::{VariableInScope, ScopeManager};
 use full_moon::{
     ast,
     node::Node,
@@ -23,13 +22,12 @@ impl Lint for UnknownRequiredModuleLint {
         Ok(UnknownRequiredModuleLint)
     }
 
-    fn pass(&self, ast: &Ast, context: &Context, ast_context: &AstContext) -> Vec<Diagnostic> {
+    fn pass(&self, ast: &Ast, context: &Context, _ast_context: &AstContext) -> Vec<Diagnostic> {
         let mut visitor = UnknownRequiredModuleVisitor {
             positions: Vec::new(),
             root_path: context.root_path.clone(),
             current_file: context.current_file.clone(),
             local_vars: HashMap::new(),
-            scope_manager: &ast_context.scope_manager,
         };
 
         visitor.visit_ast(ast);
@@ -49,15 +47,14 @@ impl Lint for UnknownRequiredModuleLint {
     }
 }
 
-struct UnknownRequiredModuleVisitor<'a> {
+struct UnknownRequiredModuleVisitor {
     positions: Vec<(u32, u32, String, String)>,
     root_path: Option<PathBuf>,
     current_file: Option<PathBuf>,
     local_vars: HashMap<String, String>,
-    scope_manager: &'a ScopeManager,
 }
 
-impl<'a> UnknownRequiredModuleVisitor<'a> {
+impl UnknownRequiredModuleVisitor {
     /// Replaces all instances of `:WaitForChild("ModuleName")` with `.ModuleName` in a string
     fn replace_wait_for_child_calls(&self, input: &str) -> String {
         let mut processed_string = input.to_string();
@@ -100,7 +97,7 @@ impl<'a> UnknownRequiredModuleVisitor<'a> {
     }
 }
 
-impl<'a> Visitor for UnknownRequiredModuleVisitor<'a> {
+impl Visitor for UnknownRequiredModuleVisitor {
 
     fn visit_local_assignment(&mut self, assignment: &ast::LocalAssignment) {
         if let Some((name, expr)) = assignment.names().iter().next().zip(assignment.expressions().iter().next()) {
@@ -207,7 +204,7 @@ impl<'a> Visitor for UnknownRequiredModuleVisitor<'a> {
 
                             // output error message
                             if !found_file {
-                                for log in potential_logs {
+                                for _ in potential_logs {
                                     // println!("{}", log);
                                 }
 
