@@ -3,6 +3,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/Kampfkarren/selene/compare/0.28.0...HEAD)
 
+## [0.29.4](https://github.com/Kampfkarren/selene/releases/0.29.4) - 2025-03-18
+### Added
+ - Added writability field for structs in the Roblox standard library
+ - 
+
 ## [0.29.3](https://github.com/Kampfkarren/selene/releases/0.29.3) - 2025-03-07
 ### Added
  - Added extra lint for unused_function_parameter

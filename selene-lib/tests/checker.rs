@@ -21,7 +21,7 @@ macro_rules! map {
 
 #[test]
 fn can_create() {
-    Checker::<serde_json::Value>::new(CheckerConfig::default(), StandardLibrary::default())
+    Checker::<serde_json::Value>::new(CheckerConfig::default(), StandardLibrary::default(), None)
         .unwrap();
 }
 
@@ -35,6 +35,7 @@ fn errors_with_bad_config() {
             ..CheckerConfig::default()
         },
         StandardLibrary::default(),
+        None,
     ) {
         Err(error) => {
             assert_eq!(error.name, "empty_if");
@@ -58,10 +59,11 @@ fn uses_lint_variation_allow() {
             ..CheckerConfig::default()
         },
         StandardLibrary::default(),
+        None,
     )
     .unwrap();
 
     assert!(checker
-        .test_on(&parse("if true then\n\treturn\nend").unwrap())
+        .test_on(&parse("if true then\n\treturn\nend").unwrap(), None)
         .is_empty());
 }

@@ -285,7 +285,7 @@ fn read<R: Read>(
         }
     };
 
-    let mut diagnostics = checker.test_on(&ast);
+    let mut diagnostics = checker.test_on(&ast, Some(filename.to_path_buf()));
     diagnostics.sort_by_key(|diagnostic| diagnostic.diagnostic.start_position());
 
     let (mut errors, mut warnings) = (0, 0);
@@ -626,7 +626,18 @@ fn start(mut options: opts::Options) {
         }
     }
 
-    let checker = Arc::new(match Checker::new(config, standard_library) {
+    // Get the path from the first file argument if it exists
+    let root_path = options.files.first()
+        .map(|path_str| {
+            let path = PathBuf::from(path_str);
+            if path.is_file() {
+                path.parent().unwrap_or_else(|| Path::new("")).to_path_buf()
+            } else {
+                path
+            }
+        });
+
+    let checker = Arc::new(match Checker::new(config, standard_library, root_path) {
         Ok(checker) => checker,
         Err(error) => {
             error!("{error}");

@@ -297,17 +297,27 @@ impl Visitor for StandardLibraryVisitor<'_> {
                     {
                         match self.standard_library.find_global(&name_path) {
                             Some(field) => {
-                                match field.field_kind {
-                                    FieldKind::Property(writability) => {
-                                        if writability != PropertyWritability::ReadOnly
-                                            && writability != PropertyWritability::NewFields
-                                        {
-                                            continue;
-                                        }
+                                // First check if there's explicit writability set on the field
+                                if let Some(writability) = &field.writability {
+                                    if *writability != PropertyWritability::ReadOnly
+                                        && *writability != PropertyWritability::NewFields
+                                    {
+                                        continue;
                                     }
-                                    FieldKind::Any => continue,
-                                    _ => {}
-                                };
+                                } else {
+                                    // Fall back to the old behavior if no explicit writability
+                                    match field.field_kind {
+                                        FieldKind::Property(writability) => {
+                                            if writability != PropertyWritability::ReadOnly
+                                                && writability != PropertyWritability::NewFields
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        FieldKind::Any => continue,
+                                        _ => {}
+                                    };
+                                }
 
                                 let range = var_expr.range().unwrap();
 

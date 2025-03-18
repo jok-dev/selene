@@ -52,7 +52,7 @@ impl ScopeManager {
         None
     }
 
-    fn variable_in_scope(&self, scope: Id<Scope>, variable_name: &str) -> VariableInScope {
+    pub fn variable_in_scope(&self, scope: Id<Scope>, variable_name: &str) -> VariableInScope {
         if let Some(scope) = self.scopes.get(scope) {
             for variable_id in scope.variables.iter().rev() {
                 let variable = &self.variables[*variable_id];

@@ -3,9 +3,10 @@
     feature = "force_exhaustive_checks",
     feature(non_exhaustive_omitted_patterns_lint)
 )]
-use std::{collections::HashMap, error::Error, fmt};
+use std::{collections::HashMap, error::Error, fmt, path::Path};
 
 use full_moon::ast::Ast;
+use std::path::PathBuf;
 use serde::{
     de::{DeserializeOwned, Deserializer},
     Deserialize,
@@ -172,6 +173,7 @@ macro_rules! use_lints {
             pub fn new(
                 mut config: CheckerConfig<V>,
                 standard_library: StandardLibrary,
+                root_path: Option<std::path::PathBuf>,
             ) -> Result<Self, CheckerError> where V: for<'de> Deserializer<'de> {
                 macro_rules! lint_field {
                     ($name:ident, $path:ty) => {{
@@ -223,13 +225,15 @@ macro_rules! use_lints {
                         user_set_standard_library: config.std.as_ref().map(|std_text| {
                             std_text.split('+').map(ToOwned::to_owned).collect()
                         }),
+                        root_path: root_path,
+                        current_file: None,
                     },
 
                     config,
                 })
             }
 
-            pub fn test_on(&self, ast: &Ast) -> Vec<CheckerDiagnostic> {
+            pub fn test_on(&self, ast: &Ast, current_file: Option<PathBuf>) -> Vec<CheckerDiagnostic> {
                 let mut diagnostics = Vec::new();
 
                 let ast_context = AstContext::from_ast(ast);
@@ -240,7 +244,9 @@ macro_rules! use_lints {
 
                         let lint_pass = {
                             profiling::scope!(&format!("lint: {}", stringify!($name)));
-                            lint.pass(ast, &self.context, &ast_context)
+                            let mut pass_context = self.context.clone();
+                            pass_context.current_file = current_file.clone();
+                            lint.pass(ast, &pass_context, &ast_context)
                         };
 
                         diagnostics.extend(&mut lint_pass.into_iter().map(|diagnostic| {
@@ -279,6 +285,21 @@ macro_rules! use_lints {
                     Some(variation) => variation.to_severity(),
                     None => R::SEVERITY,
                 }
+            }
+
+            /// Updates the root path used for resolving module imports and other file-based operations
+            /// 
+            /// # Arguments
+            /// * `path` - The new root path to use
+            pub fn with_root_path(&mut self, path: impl AsRef<Path>) -> &mut Self {
+                self.context.root_path = Some(path.as_ref().to_path_buf());
+                self
+            }
+
+            /// Updates the current file being analyzed
+            pub fn with_current_file(&mut self, path: impl AsRef<Path>) -> &mut Self {
+                self.context.current_file = Some(path.as_ref().to_path_buf());
+                self
             }
         }
     };
@@ -330,6 +351,7 @@ use_lints! {
         roblox_incorrect_color3_new_bounds: lints::roblox_incorrect_color3_new_bounds::Color3BoundsLint,
         roblox_incorrect_roact_usage: lints::roblox_incorrect_roact_usage::IncorrectRoactUsageLint,
         roblox_suspicious_udim2_new: lints::roblox_suspicious_udim2_new::SuspiciousUDim2NewLint,
+        unknown_required_module: lints::unknown_required_module::UnknownRequiredModuleLint,
         unknown_function_attribute: lints::unknown_function_attribute::UnknownFunctionAttributeLint,
     },
 }

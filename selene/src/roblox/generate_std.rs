@@ -158,7 +158,14 @@ impl RobloxGenerator {
                         match &value_type {
                             ApiValueType::Class { name } => {
                                 self.write_class_struct(api, name);
-                                Some(Field::from_field_kind(FieldKind::Struct(name.to_owned())))
+                                let writability = if tags.contains(&"ReadOnly".to_string()) {
+                                    PropertyWritability::ReadOnly
+                                } else {
+                                    PropertyWritability::OverrideFields
+                                };
+                                
+                                Some(Field::from_field_kind(FieldKind::Struct(name.to_owned()))
+                                    .with_writability(writability))
                             }
 
                             ApiValueType::DataType { value } => {

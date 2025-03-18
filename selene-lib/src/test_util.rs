@@ -1,4 +1,5 @@
 use crate::{standard_library::v1, Checker, CheckerConfig, Severity, StandardLibrary};
+use crate::lints::Context;
 use std::{
     fmt, fs,
     io::Write,
@@ -53,6 +54,7 @@ pub fn test_full_run_config_with_output(
         get_standard_library(&path_base).unwrap_or_else(|| {
             StandardLibrary::from_name("lua51").expect("no lua51 standard library")
         }),
+        Some(path_base.parent().unwrap_or_else(|| Path::new("")).to_path_buf()),
     )
     .expect("couldn't create checker");
 
@@ -61,7 +63,7 @@ pub fn test_full_run_config_with_output(
 
     let ast = full_moon::parse(&lua_source).expect("Cannot parse lua file");
 
-    let mut diagnostics = checker.test_on(&ast);
+    let mut diagnostics = checker.test_on(&ast, None);
 
     let mut files = codespan::Files::new();
     let source_id = files.add(format!("{test_name}.lua"), lua_source);

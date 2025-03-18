@@ -6,6 +6,9 @@ use codespan_reporting::diagnostic::{
 };
 use full_moon::{ast::Ast, node::Node};
 use serde::de::DeserializeOwned;
+use std::path::Path;
+use std::path::PathBuf;
+
 
 pub mod almost_swapped;
 pub mod bad_string_escape;
@@ -34,6 +37,7 @@ pub mod type_check_inside_call;
 pub mod unbalanced_assignments;
 pub mod undefined_variable;
 pub mod unknown_function_attribute;
+pub mod unknown_required_module;
 pub mod unscoped_variables;
 pub mod unused_variable;
 
@@ -218,17 +222,16 @@ impl Label {
 pub struct Context {
     pub standard_library: StandardLibrary,
     pub user_set_standard_library: Option<Vec<String>>,
+    pub root_path: Option<PathBuf>,
+    pub current_file: Option<PathBuf>,
 }
 
 impl Context {
-    #[cfg(feature = "roblox")]
     pub fn is_roblox(&self) -> bool {
-        self.standard_library.name.as_deref() == Some("roblox")
-    }
-
-    #[cfg(not(feature = "roblox"))]
-    pub fn is_roblox(&self) -> bool {
-        false
+        self.user_set_standard_library
+            .as_ref()
+            .map(|v| v.iter().any(|s| s == "roblox"))
+            .unwrap_or(false)
     }
 }
 

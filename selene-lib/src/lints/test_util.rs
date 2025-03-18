@@ -68,6 +68,8 @@ pub fn test_lint_config_with_output<
             } else {
                 None
             },
+            root_path: Some(path_base.parent().unwrap_or_else(|| Path::new("")).to_path_buf()),
+            current_file: None,
         },
         &AstContext::from_ast(&ast),
     );
