@@ -137,10 +137,7 @@ impl Visitor for UnknownRequiredModuleVisitor {
                                 arg_string = remainder.to_string();
                             }
 
-                            let first_part = arg_string
-                                .split(['.', ':'])
-                                .next()
-                                .unwrap();
+                            let first_part = arg_string.split(['.', ':']).next().unwrap();
                             potential_logs.push(format!("First part: {}", first_part));
                             if first_part == "ServerScriptService"
                                 || first_part == "ReplicatedStorage"
@@ -233,8 +230,7 @@ impl Visitor for UnknownRequiredModuleVisitor {
                             }
 
                             if !found_file {
-                                potential_logs
-                                    .push(format!("Failed to find file for: {}", arg));
+                                potential_logs.push(format!("Failed to find file for: {}", arg));
                                 potential_logs.push(format!("Converted path: {}", arg_string));
                                 potential_logs.push(format!(
                                     "Current file: {}",
