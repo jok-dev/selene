@@ -6,11 +6,11 @@
 use std::{collections::HashMap, error::Error, fmt, path::Path};
 
 use full_moon::ast::Ast;
-use std::path::PathBuf;
 use serde::{
     de::{DeserializeOwned, Deserializer},
     Deserialize,
 };
+use std::path::PathBuf;
 
 mod ast_util;
 mod lint_filtering;
@@ -288,7 +288,7 @@ macro_rules! use_lints {
             }
 
             /// Updates the root path used for resolving module imports and other file-based operations
-            /// 
+            ///
             /// # Arguments
             /// * `path` - The new root path to use
             pub fn with_root_path(&mut self, path: impl AsRef<Path>) -> &mut Self {

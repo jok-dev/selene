@@ -9,7 +9,6 @@ use serde::de::DeserializeOwned;
 use std::path::Path;
 use std::path::PathBuf;
 
-
 pub mod almost_swapped;
 pub mod bad_string_escape;
 pub mod compare_nan;

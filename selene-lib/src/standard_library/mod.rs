@@ -442,7 +442,7 @@ pub struct Field {
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<Deprecated>,
-    
+
     // Add a new field that can store writability information
     // for any field type (including structs)
     #[serde(default)]
@@ -462,7 +462,7 @@ impl Field {
     pub fn with_deprecated(self, deprecated: Option<Deprecated>) -> Self {
         Self { deprecated, ..self }
     }
-    
+
     // Add a method to set writability
     pub fn with_writability(self, writability: PropertyWritability) -> Self {
         Self {

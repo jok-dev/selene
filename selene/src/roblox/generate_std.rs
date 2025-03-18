@@ -163,9 +163,11 @@ impl RobloxGenerator {
                                 } else {
                                     PropertyWritability::OverrideFields
                                 };
-                                
-                                Some(Field::from_field_kind(FieldKind::Struct(name.to_owned()))
-                                    .with_writability(writability))
+
+                                Some(
+                                    Field::from_field_kind(FieldKind::Struct(name.to_owned()))
+                                        .with_writability(writability),
+                                )
                             }
 
                             ApiValueType::DataType { value } => {
