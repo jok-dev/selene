@@ -702,7 +702,8 @@ globals:
         type: number
   script.Name:
     property: new-fields
-  
+  Content.none:
+    property: read-only
 structs:
   EnumItem:
     Name:
