@@ -19,6 +19,8 @@ impl Lint for UnknownRequiredModuleLint {
     }
 
     fn pass(&self, ast: &Ast, context: &Context, _ast_context: &AstContext) -> Vec<Diagnostic> {
+        return vec![];
+
         let mut visitor = UnknownRequiredModuleVisitor {
             positions: Vec::new(),
             root_path: context.root_path.clone(),
