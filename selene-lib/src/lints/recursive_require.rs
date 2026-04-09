@@ -550,23 +550,22 @@ mod tests {
         let ast_context = AstContext::from_ast(&ast);
 
         let lint = RecursiveRequireLint;
-        let diagnostics = lint
-            .pass(
-                &ast,
-                &Context {
-                    standard_library: StandardLibrary::from_name("lua51")
-                        .expect("no lua51 standard library"),
-                    user_set_standard_library: None,
-                    root_path: Some(
-                        path_base
-                            .parent()
-                            .expect("recursive_require fixture should have a parent directory")
-                            .to_path_buf(),
-                    ),
-                    current_file: Some(lua_path.clone()),
-                },
-                &ast_context,
-            );
+        let diagnostics = lint.pass(
+            &ast,
+            &Context {
+                standard_library: StandardLibrary::from_name("lua51")
+                    .expect("no lua51 standard library"),
+                user_set_standard_library: None,
+                root_path: Some(
+                    path_base
+                        .parent()
+                        .expect("recursive_require fixture should have a parent directory")
+                        .to_path_buf(),
+                ),
+                current_file: Some(lua_path.clone()),
+            },
+            &ast_context,
+        );
 
         (lua_source, diagnostics)
     }

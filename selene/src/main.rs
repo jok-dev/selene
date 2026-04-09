@@ -645,13 +645,15 @@ fn start(mut options: opts::Options) {
         }
     }
 
-    let checker = Arc::new(match Checker::new(config, standard_library, root_path(&options)) {
-        Ok(checker) => checker,
-        Err(error) => {
-            error!("{error}");
-            std::process::exit(1);
-        }
-    });
+    let checker = Arc::new(
+        match Checker::new(config, standard_library, root_path(&options)) {
+            Ok(checker) => checker,
+            Err(error) => {
+                error!("{error}");
+                std::process::exit(1);
+            }
+        },
+    );
 
     let pool = ThreadPool::new(options.num_threads);
 
@@ -862,13 +864,16 @@ mod tests {
         }
 
         assert!(get_opts_safe(args(vec!["-", "--formatter=plain"]), true).is_ok());
-        assert!(
-            get_opts_safe(
-                args(vec!["--stdin-filepath", "foo.lua", "-", "--formatter=plain"]),
-                true,
-            )
-            .is_ok()
-        );
+        assert!(get_opts_safe(
+            args(vec![
+                "--stdin-filepath",
+                "foo.lua",
+                "-",
+                "--formatter=plain"
+            ]),
+            true,
+        )
+        .is_ok());
 
         assert!(get_opts_safe(args(vec!["--fail", "files"]), true).is_ok());
     }
