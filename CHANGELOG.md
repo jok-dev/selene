@@ -1,6 +1,16 @@
 # Changelog
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.29.6](https://github.com/Kampfkarren/selene/releases/tag/0.29.6) - 2026-04-09
+### Added
+- Added the `recursive_require` lint for detecting circular module dependencies.
+- Added the `unused_module_variable` lint for module values that are never consumed.
+
+### Changed
+- Added `--stdin-filepath` support so file-aware lints can work when source is provided over stdin.
+- Updated the VS Code extension to pass the real document path for stdin linting when supported.
+- Release automation now publishes the VS Code extension `.vsix` alongside the CLI binaries.
+
 ## [0.29.5](https://github.com/Kampfkarren/selene/compare/0.29.5)
 - Added `Instance.fromExisting` to the Roblox standard library
 - Added new [`roblox_manual_fromscale_or_fromoffset` lint](https://kampfkarren.github.io/selene/lints/roblox_manual_fromscale_or_fromoffset.html), which will warn when the arguments could be simplified to `UDim2.fromScale` or `UDim2.fromOffset`.

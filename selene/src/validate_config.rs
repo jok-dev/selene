@@ -175,6 +175,10 @@ pub fn validate_config(
 mod tests {
     use super::*;
 
+    fn normalize_rich_output(output: &str) -> String {
+        output.replace("\r\n", "\n").replace('\\', "/")
+    }
+
     #[test]
     fn validate_config_tests() {
         let mut tests_pass = true;
@@ -208,6 +212,9 @@ mod tests {
                 std::fs::read_to_string(validate_config_test.path().join("rich_output.txt"));
 
             if let Ok(expected_rich_output) = expected_rich_output {
+                let rich_output = normalize_rich_output(&rich_output);
+                let expected_rich_output = normalize_rich_output(&expected_rich_output);
+
                 if rich_output != expected_rich_output {
                     tests_pass = false;
 
@@ -220,7 +227,7 @@ mod tests {
             } else {
                 std::fs::write(
                     validate_config_test.path().join("rich_output.txt"),
-                    rich_output,
+                    normalize_rich_output(&rich_output),
                 )
                 .unwrap();
             }

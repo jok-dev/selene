@@ -12,6 +12,9 @@ fn capabilities() -> serde_json::Value {
     serde_json::json!({
         "validateConfig": {
             "version": "1.0.0"
+        },
+        "stdinFilepath": {
+            "version": "1.0.0"
         }
     })
 }

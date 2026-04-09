@@ -1,4 +1,3 @@
-use crate::lints::Context;
 use crate::{standard_library::v1, Checker, CheckerConfig, Severity, StandardLibrary};
 use std::{
     fmt, fs,

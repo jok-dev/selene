@@ -1,0 +1,8 @@
+warning[recursive_require]: this require participates in a recursive dependency
+  ┌─ direct_cycle.lua:1:28
+  │
+1 │ local dependency = require(script.Parent.direct_cycle_dependency)
+  │                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │
+  = dependency chain: direct_cycle.lua -> direct_cycle_dependency.lua -> direct_cycle.lua
+

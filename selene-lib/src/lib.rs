@@ -241,20 +241,23 @@ macro_rules! use_lints {
                 macro_rules! check_lint {
                     ($name:ident) => {
                         let lint = &self.$name;
+                        let severity = self.get_lint_severity(lint, stringify!($name));
 
-                        let lint_pass = {
-                            profiling::scope!(&format!("lint: {}", stringify!($name)));
-                            let mut pass_context = self.context.clone();
-                            pass_context.current_file = current_file.clone();
-                            lint.pass(ast, &pass_context, &ast_context)
-                        };
+                        if severity != Severity::Allow {
+                            let lint_pass = {
+                                profiling::scope!(&format!("lint: {}", stringify!($name)));
+                                let mut pass_context = self.context.clone();
+                                pass_context.current_file = current_file.clone();
+                                lint.pass(ast, &pass_context, &ast_context)
+                            };
 
-                        diagnostics.extend(&mut lint_pass.into_iter().map(|diagnostic| {
-                            CheckerDiagnostic {
-                                diagnostic,
-                                severity: self.get_lint_severity(lint, stringify!($name)),
-                            }
-                        }));
+                            diagnostics.extend(&mut lint_pass.into_iter().map(|diagnostic| {
+                                CheckerDiagnostic {
+                                    diagnostic,
+                                    severity,
+                                }
+                            }));
+                        }
                     };
                 }
 
@@ -337,12 +340,14 @@ use_lints! {
     multiple_statements: lints::multiple_statements::MultipleStatementsLint,
     must_use: lints::must_use::MustUseLint,
     parenthese_conditions: lints::parenthese_conditions::ParentheseConditionsLint,
+    recursive_require: lints::recursive_require::RecursiveRequireLint,
     shadowing: lints::shadowing::ShadowingLint,
     suspicious_reverse_loop: lints::suspicious_reverse_loop::SuspiciousReverseLoopLint,
     type_check_inside_call: lints::type_check_inside_call::TypeCheckInsideCallLint,
     unbalanced_assignments: lints::unbalanced_assignments::UnbalancedAssignmentsLint,
     undefined_variable: lints::undefined_variable::UndefinedVariableLint,
     unscoped_variables: lints::unscoped_variables::UnscopedVariablesLint,
+    unused_module_variable: lints::unused_module_variable::UnusedModuleVariableLint,
     unused_variable: lints::unused_variable::UnusedVariableLint<false>,
     unused_function_parameter: lints::unused_variable::UnusedVariableLint<true>,
 
@@ -352,7 +357,6 @@ use_lints! {
         roblox_incorrect_roact_usage: lints::roblox_incorrect_roact_usage::IncorrectRoactUsageLint,
         roblox_manual_fromscale_or_fromoffset: lints::roblox_manual_fromscale_or_fromoffset::ManualFromScaleOrFromOffsetLint,
         roblox_suspicious_udim2_new: lints::roblox_suspicious_udim2_new::SuspiciousUDim2NewLint,
-        unknown_required_module: lints::unknown_required_module::UnknownRequiredModuleLint,
         unknown_function_attribute: lints::unknown_function_attribute::UnknownFunctionAttributeLint,
     },
 }

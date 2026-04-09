@@ -1,0 +1,6 @@
+error[unused_module_variable]: SomeModule.UnusedVariable is assigned a value, but never used
+  ┌─ module_fields_custom_ignores.lua:3:12
+  │
+3 │ SomeModule.UnusedVariable = 12
+  │            ^^^^^^^^^^^^^^
+

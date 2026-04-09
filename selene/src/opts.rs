@@ -64,6 +64,10 @@ pub struct Options {
     #[structopt(parse(from_os_str), min_values(1), index(1), required(true))]
     pub files: Vec<OsString>,
 
+    /// Associates stdin input with a real filepath for file-aware lints
+    #[structopt(long, parse(from_os_str))]
+    pub stdin_filepath: Option<PathBuf>,
+
     #[structopt(subcommand)]
     pub command: Option<Command>,
 

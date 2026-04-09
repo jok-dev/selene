@@ -1,3 +1,15 @@
+warning[unused_function_parameter]: x is defined, but never used
+  ┌─ lint_filtering.lua:4:18
+  │
+4 │ local function a(x, y)
+  │                  ^
+
+warning[unused_function_parameter]: y is defined, but never used
+  ┌─ lint_filtering.lua:4:21
+  │
+4 │ local function a(x, y)
+  │                     ^
+
 error[invalid_lint_filter]: no lint named `lint_thatll_never_be_created` exists
    ┌─ lint_filtering.lua:11:1
    │

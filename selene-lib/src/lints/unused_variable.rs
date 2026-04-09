@@ -1,5 +1,5 @@
 use crate::{
-    ast_util::scopes::AssignedValue,
+    ast_util::scopes::{AssignedValue, Reference, Variable},
     standard_library::{Field, FieldKind, Observes},
 };
 
@@ -37,6 +37,84 @@ pub enum AnalyzedReference {
     ObservedWrite(Label),
 }
 
+pub(super) fn analyze_reference(
+    variable: &Variable,
+    reference: &Reference,
+    context: &Context,
+    ast_context: &AstContext,
+) -> AnalyzedReference {
+    let is_static_table = matches!(variable.value, Some(AssignedValue::StaticTable { .. }));
+
+    if reference.write.is_some() {
+        if let Some(indexing) = &reference.indexing {
+            if is_static_table
+                && indexing.len() == 1
+                && indexing.iter().any(|index| index.static_name.is_some())
+            {
+                return AnalyzedReference::ObservedWrite(Label::new_with_message(
+                    reference.identifier,
+                    format!("`{}` is only getting written to", variable.name),
+                ));
+            }
+        }
+
+        if !reference.read {
+            return AnalyzedReference::PlainWrite;
+        }
+    }
+
+    if !is_static_table {
+        return AnalyzedReference::Read;
+    }
+
+    let within_function_stmt = match &reference.within_function_stmt {
+        Some(within_function_stmt) => within_function_stmt,
+        None => return AnalyzedReference::Read,
+    };
+
+    let function_call_stmt =
+        &ast_context.scope_manager.function_calls[within_function_stmt.function_call_stmt_id];
+
+    if ast_context.scope_manager.references[function_call_stmt.initial_reference]
+        .resolved
+        .is_some()
+    {
+        return AnalyzedReference::Read;
+    }
+
+    let function_behavior = match context
+        .standard_library
+        .find_global(&function_call_stmt.call_name_path)
+    {
+        Some(Field {
+            field_kind: FieldKind::Function(function_behavior),
+            ..
+        }) => function_behavior,
+        _ => return AnalyzedReference::Read,
+    };
+
+    let argument = match function_behavior
+        .arguments
+        .get(within_function_stmt.argument_index)
+    {
+        Some(argument) => argument,
+        None => return AnalyzedReference::Read,
+    };
+
+    if argument.observes != Observes::Write {
+        return AnalyzedReference::Read;
+    }
+
+    AnalyzedReference::ObservedWrite(Label::new_with_message(
+        reference.identifier,
+        format!(
+            "`{}` only writes to `{}`",
+            function_call_stmt.call_name_path.join("."),
+            variable.name
+        ),
+    ))
+}
+
 impl<const ONLY_CHECK_PARAMETERS: bool> Lint for UnusedVariableLint<ONLY_CHECK_PARAMETERS> {
     type Config = UnusedVariableConfig;
     type Error = regex::Error;
@@ -68,97 +146,25 @@ impl<const ONLY_CHECK_PARAMETERS: bool> Lint for UnusedVariableLint<ONLY_CHECK_P
                 continue;
             }
 
-            let references = variable
+            let analyzed_references = variable
                 .references
                 .iter()
                 .copied()
-                .map(|id| &ast_context.scope_manager.references[id]);
-
-            // We need to make sure that references that are marked as "read" aren't only being read in an "observes: write" context.
-            let analyzed_references = references
-                .map(|reference| {
-                    let is_static_table =
-                        matches!(variable.value, Some(AssignedValue::StaticTable { .. }));
-
-                    if reference.write.is_some() {
-                        if let Some(indexing) = &reference.indexing {
-                            if is_static_table
-                                && indexing.len() == 1 // This restriction can be lifted someday, but only once we can verify that the value has no side effects/is its own static table
-                                && indexing.iter().any(|index| index.static_name.is_some())
-                            {
-                                return AnalyzedReference::ObservedWrite(Label::new_with_message(
-                                    reference.identifier,
-                                    format!("`{}` is only getting written to", variable.name),
-                                ));
-                            }
-                        }
-
-                        if !reference.read {
-                            return AnalyzedReference::PlainWrite;
-                        }
-                    }
-
-                    if !is_static_table {
-                        return AnalyzedReference::Read;
-                    }
-
-                    let within_function_stmt = match &reference.within_function_stmt {
-                        Some(within_function_stmt) => within_function_stmt,
-                        None => return AnalyzedReference::Read,
-                    };
-
-                    let function_call_stmt = &ast_context.scope_manager.function_calls
-                        [within_function_stmt.function_call_stmt_id];
-
-                    // The function call it's within is script defined, we can't assume anything
-                    if ast_context.scope_manager.references[function_call_stmt.initial_reference]
-                        .resolved
-                        .is_some()
-                    {
-                        return AnalyzedReference::Read;
-                    }
-
-                    let function_behavior = match context
-                        .standard_library
-                        .find_global(&function_call_stmt.call_name_path)
-                    {
-                        Some(Field {
-                            field_kind: FieldKind::Function(function_behavior),
-                            ..
-                        }) => function_behavior,
-                        _ => return AnalyzedReference::Read,
-                    };
-
-                    let argument = match function_behavior
-                        .arguments
-                        .get(within_function_stmt.argument_index)
-                    {
-                        Some(argument) => argument,
-                        None => return AnalyzedReference::Read,
-                    };
-
-                    let write_only = argument.observes == Observes::Write;
-
-                    if !write_only {
-                        return AnalyzedReference::Read;
-                    }
-
-                    AnalyzedReference::ObservedWrite(Label::new_with_message(
-                        reference.identifier,
-                        format!(
-                            "`{}` only writes to `{}`",
-                            // TODO: This is a typo if this is a method call
-                            function_call_stmt.call_name_path.join("."),
-                            variable.name
-                        ),
-                    ))
+                .map(|id| {
+                    analyze_reference(
+                        variable,
+                        &ast_context.scope_manager.references[id],
+                        context,
+                        ast_context,
+                    )
                 })
                 .collect::<Vec<_>>();
 
-            if !analyzed_references
+            let variable_is_read = analyzed_references
                 .iter()
-                .any(|reference| reference == &AnalyzedReference::Read)
-            {
+                .any(|reference| reference == &AnalyzedReference::Read);
+
+            if !variable_is_read {
                 let mut notes = Vec::new();
 
                 if variable.is_self {

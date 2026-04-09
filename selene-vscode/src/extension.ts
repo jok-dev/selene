@@ -7,7 +7,7 @@ import { Diagnostic, Severity, Label } from "./structures/diagnostic"
 import { Output } from "./structures/output"
 import { lintConfig } from "./configLint"
 import { byteToCharMap } from "./byteToCharMap"
-import { Capabilities } from "./structures/capabilities"
+import { capability, Capabilities } from "./structures/capabilities"
 
 let trySelene: Promise<boolean>
 
@@ -31,6 +31,10 @@ function labelToRange(
             byteOffsetMap.get(label.span.end) ?? label.span.end,
         ),
     )
+}
+
+function quoteShellArgument(value: string): string {
+    return `"${value.replace(/"/g, '\\"')}"`
 }
 
 export async function activate(
@@ -147,9 +151,15 @@ export async function activate(
                 return
         }
 
+        const command = capability(capabilities, "stdinFilepath", "1")
+            ? `--display-style=json2 --no-summary --stdin-filepath ${quoteShellArgument(
+                  document.uri.fsPath,
+              )} -`
+            : "--display-style=json2 --no-summary -"
+
         const output = await selene.seleneCommand(
             context.globalStorageUri,
-            "--display-style=json2 --no-summary -",
+            command,
             selene.Expectation.Stderr,
             vscode.workspace.getWorkspaceFolder(document.uri),
             document.getText(),

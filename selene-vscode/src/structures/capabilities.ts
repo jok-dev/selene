@@ -4,6 +4,9 @@ export type Capabilities = {
     validateConfig?: {
         version: string
     }
+    stdinFilepath?: {
+        version: string
+    }
 }
 
 export function capability(

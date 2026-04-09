@@ -103,6 +103,7 @@ pub fn test_lint_config_with_output<
     let output_path = path_base.with_extension(output_extension);
 
     if let Ok(expected) = fs::read_to_string(&output_path) {
+        let expected = expected.replace("\r\n", "\n");
         pretty_assertions::assert_eq!(PrettyString(&expected), PrettyString(stderr));
     } else {
         let mut output_file = fs::File::create(output_path).expect("couldn't create output file");

@@ -69,3 +69,4 @@ end
 ```
 
 ...will not lint, as we cannot be sure `value` is unused outside of this.
+

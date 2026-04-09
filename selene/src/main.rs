@@ -407,6 +407,25 @@ fn read_file(checker: &Checker<toml::value::Value>, lua_version: LuaVersion, fil
     );
 }
 
+fn root_path(options: &opts::Options) -> Option<PathBuf> {
+    if let Some(first_file) = options.files.first() {
+        if first_file == "-" {
+            if let Some(path) = options.stdin_filepath.as_ref() {
+                return Some(path.parent().unwrap_or_else(|| Path::new("")).to_path_buf());
+            }
+        }
+    }
+
+    options.files.first().map(|path_str| {
+        let path = PathBuf::from(path_str);
+        if path.is_file() {
+            path.parent().unwrap_or_else(|| Path::new("")).to_path_buf()
+        } else {
+            path
+        }
+    })
+}
+
 fn start(mut options: opts::Options) {
     *OPTIONS.write().unwrap() = Some(options.clone());
 
@@ -512,7 +531,7 @@ fn start(mut options: opts::Options) {
 
     let (config, config_directory): (CheckerConfig<toml::value::Value>, Option<PathBuf>) =
         match options.config {
-            Some(config_file) => {
+            Some(ref config_file) => {
                 let config_contents = match fs::read_to_string(&config_file) {
                     Ok(contents) => contents,
                     Err(error) => {
@@ -626,17 +645,7 @@ fn start(mut options: opts::Options) {
         }
     }
 
-    // Get the path from the first file argument if it exists
-    let root_path = options.files.first().map(|path_str| {
-        let path = PathBuf::from(path_str);
-        if path.is_file() {
-            path.parent().unwrap_or_else(|| Path::new("")).to_path_buf()
-        } else {
-            path
-        }
-    });
-
-    let checker = Arc::new(match Checker::new(config, standard_library, root_path) {
+    let checker = Arc::new(match Checker::new(config, standard_library, root_path(&options)) {
         Ok(checker) => checker,
         Err(error) => {
             error!("{error}");
@@ -649,7 +658,11 @@ fn start(mut options: opts::Options) {
     for filename in &options.files {
         if filename == "-" {
             let checker = Arc::clone(&checker);
-            pool.execute(move || read(&checker, Path::new("-"), lua_version, io::stdin().lock()));
+            let stdin_filename = options
+                .stdin_filepath
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("-"));
+            pool.execute(move || read(&checker, &stdin_filename, lua_version, io::stdin().lock()));
             continue;
         }
 
@@ -849,6 +862,13 @@ mod tests {
         }
 
         assert!(get_opts_safe(args(vec!["-", "--formatter=plain"]), true).is_ok());
+        assert!(
+            get_opts_safe(
+                args(vec!["--stdin-filepath", "foo.lua", "-", "--formatter=plain"]),
+                true,
+            )
+            .is_ok()
+        );
 
         assert!(get_opts_safe(args(vec!["--fail", "files"]), true).is_ok());
     }
